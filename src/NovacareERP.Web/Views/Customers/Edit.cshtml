@@ -1,0 +1,99 @@
+@model NovacareERP.Application.Customers.CustomerListViewModel
+@{
+    ViewData["Title"] = "Musteri Duzenle";
+}
+
+<form class="customer-create" asp-controller="Customers" asp-action="Edit" asp-route-id="@Model.Form.Id" method="post">
+    @Html.AntiForgeryToken()
+
+    <section class="record-hero">
+        <div>
+            <span class="eyebrow">Musteri karti</span>
+            <h1>Musteri duzenle</h1>
+            <p>Musterinin kimlik, iletisim ve cari bilgilerini guncelleyin.</p>
+        </div>
+        <div class="record-toolbar">
+            <a class="btn-secondary-action back-action" asp-controller="Customers" asp-action="Details" asp-route-id="@Model.Form.Id"><i class="bi bi-arrow-left"></i> Geri Don</a>
+            <button class="btn-primary-action save-action" type="submit">KAYDET</button>
+        </div>
+    </section>
+
+    <section class="record-card edit-record-card">
+        <div class="record-tab-panel active">
+            <div class="record-section-heading">
+                <div>
+                    <span class="eyebrow">Kart bilgileri</span>
+                    <h2>Temel bilgiler</h2>
+                </div>
+            </div>
+
+            <div class="record-grid two-column">
+                <input asp-for="Form.Id" name="Id" type="hidden" />
+
+                <div class="record-field">
+                    <label>Firma / Musteri Unvani</label>
+                    <input asp-for="Form.DisplayName" name="DisplayName" placeholder="Firma veya kisi adi" />
+                </div>
+
+                <div class="record-field">
+                    <label>Cari Tipi</label>
+                    <select asp-for="Form.LegalType" name="LegalType">
+                        @foreach (var option in Model.LegalTypeOptions)
+                        {
+                            <option value="@((int)option.Value)">@option.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="record-field">
+                    <label>E-posta</label>
+                    <input asp-for="Form.Email" name="Email" type="email" />
+                </div>
+
+                <div class="record-field">
+                    <label>Telefon</label>
+                    <input asp-for="Form.Phone" name="Phone" type="tel" />
+                </div>
+
+                <div class="record-field">
+                    <label>Yetkili Kisi</label>
+                    <input asp-for="Form.ContactPerson" name="ContactPerson" />
+                </div>
+
+                <div class="record-field">
+                    <label>Gorevi</label>
+                    <input asp-for="Form.ContactTitle" name="ContactTitle" />
+                </div>
+
+                <div class="record-field">
+                    <label>Sehir</label>
+                    <input asp-for="Form.City" name="City" />
+                </div>
+
+                <div class="record-field">
+                    <label>Para Birimi</label>
+                    <select asp-for="Form.CurrencyCode" name="CurrencyCode">
+                        <option>TRY</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                    </select>
+                </div>
+
+                <div class="record-field">
+                    <label>Vergi Dairesi</label>
+                    <input asp-for="Form.TaxOffice" name="TaxOffice" />
+                </div>
+
+                <div class="record-field">
+                    <label>Vergi / TC Kimlik No</label>
+                    <input asp-for="Form.TaxNumber" name="TaxNumber" />
+                </div>
+
+                <div class="record-field">
+                    <label>Risk Limiti</label>
+                    <input asp-for="Form.CreditLimit" name="CreditLimit" type="number" min="0" step="1000" />
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

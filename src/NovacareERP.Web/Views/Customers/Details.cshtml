@@ -31,6 +31,11 @@
 
 <section class="detail-actions">
     <a class="btn-secondary-action" asp-controller="Customers" asp-action="Index"><i class="bi bi-arrow-left"></i> Listeye Don</a>
+    <a class="btn-secondary-action" asp-controller="Customers" asp-action="Edit" asp-route-id="@Model.Id"><i class="bi bi-gear-fill"></i> Duzenle</a>
+    <form class="inline-delete-form" asp-controller="Customers" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Bu musteri kaydini silmek istediginize emin misiniz?');">
+        @Html.AntiForgeryToken()
+        <button class="btn-danger-action" type="submit"><i class="bi bi-lock-fill"></i> Sil</button>
+    </form>
     <button class="btn-primary-action" type="button"><i class="bi bi-plus"></i> Satis Yap</button>
     <button class="btn-secondary-action" type="button"><i class="bi bi-currency-exchange"></i> Tahsilat Gir</button>
     <button class="btn-secondary-action" type="button"><i class="bi bi-receipt"></i> Teklif Hazirla</button>

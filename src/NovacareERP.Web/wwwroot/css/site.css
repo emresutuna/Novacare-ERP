@@ -228,7 +228,8 @@ button {
 .quick-add,
 .ghost-button,
 .btn-primary-action,
-.btn-secondary-action {
+.btn-secondary-action,
+.btn-danger-action {
   border: 0;
   border-radius: 8px;
   display: inline-flex;
@@ -297,6 +298,19 @@ button {
 .btn-secondary-action:hover {
   color: var(--navy-950);
   background: #e4e7ec;
+}
+
+.btn-danger-action {
+  min-height: 40px;
+  padding: 0 14px;
+  color: #fff;
+  background: #b42318;
+  box-shadow: 0 8px 18px rgba(180, 35, 24, 0.16);
+}
+
+.btn-danger-action:hover {
+  color: #fff;
+  background: #912018;
 }
 
 .calendar-button {
@@ -1022,6 +1036,10 @@ button {
   gap: 10px;
 }
 
+.inline-delete-form {
+  display: inline-flex;
+}
+
 .detail-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(170px, 1fr));
@@ -1301,6 +1319,10 @@ button {
 
 .record-card {
   overflow: hidden;
+}
+
+.edit-record-card {
+  max-width: 1040px;
 }
 
 .record-tab-panel {
@@ -1653,6 +1675,11 @@ button {
 
   .detail-actions {
     display: grid;
+  }
+
+  .inline-delete-form,
+  .inline-delete-form button {
+    width: 100%;
   }
 
   .detail-table-row,

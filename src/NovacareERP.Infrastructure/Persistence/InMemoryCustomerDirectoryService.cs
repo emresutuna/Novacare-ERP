@@ -119,6 +119,52 @@ public sealed class InMemoryCustomerDirectoryService : ICustomerDirectoryService
             IsActive: true));
     }
 
+    public bool Update(Guid id, CustomerFormViewModel form)
+    {
+        var index = _customers.FindIndex(customer => customer.Id == id);
+
+        if (index < 0)
+        {
+            return false;
+        }
+
+        var existing = _customers[index];
+        var legalTypeText = GetLegalTypeText(form.LegalType);
+        var displayName = string.IsNullOrWhiteSpace(form.DisplayName)
+            ? existing.DisplayName
+            : Clean(form.DisplayName);
+
+        _customers[index] = existing with
+        {
+            DisplayName = displayName,
+            LegalType = form.LegalType,
+            LegalTypeText = legalTypeText,
+            TaxNumber = Clean(form.TaxNumber),
+            TaxOffice = Clean(form.TaxOffice),
+            ContactPerson = Clean(form.ContactPerson),
+            ContactTitle = Clean(form.ContactTitle),
+            Email = Clean(form.Email),
+            Phone = Clean(form.Phone),
+            City = Clean(form.City),
+            CurrencyCode = NormalizeCurrencyCode(form.CurrencyCode),
+            CreditLimit = form.CreditLimit
+        };
+
+        return true;
+    }
+
+    public bool Delete(Guid id)
+    {
+        var customer = GetById(id);
+
+        if (customer is null)
+        {
+            return false;
+        }
+
+        return _customers.Remove(customer);
+    }
+
     private static string Clean(string? value)
     {
         return value?.Trim() ?? "";

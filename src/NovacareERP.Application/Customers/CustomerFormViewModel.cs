@@ -2,6 +2,7 @@ namespace NovacareERP.Application.Customers;
 
 public sealed class CustomerFormViewModel
 {
+    public Guid Id { get; init; }
     public string Title { get; init; } = "Yeni Musteri";
     public string DisplayName { get; init; } = "";
     public NovacareERP.Domain.Enums.CustomerLegalType LegalType { get; init; } = NovacareERP.Domain.Enums.CustomerLegalType.LimitedCompany;
