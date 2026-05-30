@@ -1,0 +1,190 @@
+@model NovacareERP.Application.Appointments.AppointmentListViewModel
+@{
+    ViewData["Title"] = "Yeni Randevu";
+}
+
+<form class="customer-create" asp-controller="Appointments" asp-action="Create" method="post" id="appointmentForm">
+    @Html.AntiForgeryToken()
+
+    <section class="record-hero">
+        <div>
+            <span class="eyebrow">Yeni randevu oluştur</span>
+            <h1>Randevu Kaydet</h1>
+            <p>Müşteri randevularını, görüşme konularını, taleplerini ve özel ek notlarını tek arayüz üzerinden düzenleyin.</p>
+        </div>
+        <div class="record-toolbar">
+            <a class="btn-secondary-action back-action" asp-controller="Appointments" asp-action="Index"><i class="bi bi-arrow-left"></i> Geri Dön</a>
+            <button class="btn-primary-action save-action" type="submit">KAYDET</button>
+        </div>
+    </section>
+
+    <section class="record-workspace">
+        <aside class="record-side-nav" aria-label="Müşteri kayıt bölümleri">
+            <button class="active" type="button" data-tab-target="general" id="tab-general">
+                <i class="bi bi-calendar-event-fill"></i>
+                <span><strong>Genel Bilgiler</strong><small>Başlık ve tarih</small></span>
+            </button>
+            <button type="button" data-tab-target="customer-choice" id="tab-customer">
+                <i class="bi bi-people-fill"></i>
+                <span><strong>Müşteri Seçimi</strong><small>Mevcut veya yeni cari</small></span>
+            </button>
+            <button type="button" data-tab-target="demand" id="tab-demand">
+                <i class="bi bi-chat-right-text-fill"></i>
+                <span><strong>Detaylar</strong><small>Müşteri talebi ve not</small></span>
+            </button>
+        </aside>
+
+        <section class="record-card">
+            <!-- GENERAL TAB -->
+            <div class="record-tab-panel active" data-tab-panel="general">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Genel</span>
+                        <h2>Randevu Planlama Bilgileri</h2>
+                    </div>
+                </div>
+
+                <div class="record-grid two-column">
+                    <div class="record-field span-2">
+                        <label>Görüşme Ünvanı / Başlığı</label>
+                        <input asp-for="Form.Title" name="Title" placeholder="Örn: İlk Tanışma Görüşmesi, Fiyat Teklifi Detayları vb." required />
+                    </div>
+
+                    <div class="record-field">
+                        <label>Randevu Tarihi</label>
+                        <input asp-for="Form.Date" name="Date" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                    </div>
+
+                    <div class="record-field">
+                        <label>Randevu Saati</label>
+                        <input asp-for="Form.Time" name="Time" type="time" value="@DateTime.Now.ToString("HH:mm")" required />
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOMER CHOICE TAB -->
+            <div class="record-tab-panel" data-tab-panel="customer-choice">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Müşteri</span>
+                        <h2>Cari Bilgileri</h2>
+                    </div>
+                </div>
+
+                <div class="record-grid two-column">
+                    <div class="record-field span-2">
+                        <div style="background: var(--blue-050); border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin-bottom: 12px; display:flex; gap: 20px;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:800; margin:0;">
+                                <input type="radio" name="Form.CreateNewCustomer" value="false" checked onclick="toggleCustomerMode(false)" style="width:18px; height:18px; margin:0;" />
+                                Mevcut Müşterilerden Seç
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:800; margin:0;">
+                                <input type="radio" name="Form.CreateNewCustomer" value="true" onclick="toggleCustomerMode(true)" style="width:18px; height:18px; margin:0;" />
+                                Yeni Müşteri Oluştur
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- EXISTING CUSTOMER DROPDOWN -->
+                    <div class="record-field span-2" id="existingCustomerField">
+                        <label>Müşteri Seçin</label>
+                        <select asp-for="Form.CustomerId" name="CustomerId" style="width:100%; height:42px; background:var(--blue-050); border:1px solid var(--line); border-radius:8px; padding: 0 10px; font-weight:750;">
+                            @foreach (var customer in Model.Customers)
+                            {
+                                <option value="@customer.Id">@customer.DisplayName (@customer.ContactPerson - @customer.City)</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- NEW CUSTOMER QUICK FIELDS -->
+                    <div id="newCustomerFields" class="span-2" style="display:none; grid-template-columns: repeat(2, 1fr); gap: 14px; width: 100%;">
+                        <div class="record-field span-2">
+                            <label>Yeni Müşteri Firma Ünvanı</label>
+                            <input asp-for="Form.NewCustomerDisplayName" name="NewCustomerDisplayName" placeholder="Firma veya şahıs adı" style="width:100%;" />
+                        </div>
+                        <div class="record-field">
+                            <label>Yeni Yetkili Kişi</label>
+                            <input asp-for="Form.NewCustomerContactPerson" name="NewCustomerContactPerson" placeholder="Görüşülecek yetkili adı" style="width:100%;" />
+                        </div>
+                        <div class="record-field">
+                            <label>Yeni Telefon</label>
+                            <input asp-for="Form.NewCustomerPhone" name="NewCustomerPhone" placeholder="+90 555..." style="width:100%;" />
+                        </div>
+                        <div class="record-field">
+                            <label>Yeni E-Posta</label>
+                            <input asp-for="Form.NewCustomerEmail" name="NewCustomerEmail" type="email" placeholder="ornek@firma.com" style="width:100%;" />
+                        </div>
+                        <div class="record-field">
+                            <label>Yeni Şehir</label>
+                            <input asp-for="Form.NewCustomerCity" name="NewCustomerCity" placeholder="İstanbul" style="width:100%;" />
+                        </div>
+                    </div>
+
+                    <div class="record-field span-2">
+                        <label>Görüşen Kişi (Sizin Temsilciniz / Görüşme Ortağı)</label>
+                        <input asp-for="Form.ContactPerson" name="ContactPerson" placeholder="Görüşmeyi gerçekleştirecek temsilciniz" required />
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEMAND & DETAILS TAB -->
+            <div class="record-tab-panel" data-tab-panel="demand">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Görüşme İçeriği</span>
+                        <h2>Talep ve Not Detayları</h2>
+                    </div>
+                </div>
+
+                <div class="record-grid two-column">
+                    <div class="record-field span-2">
+                        <label>Müşteri Talebi</label>
+                        <textarea asp-for="Form.CustomerDemand" name="CustomerDemand" rows="4" placeholder="Müşterinin görüşme esnasındaki talepleri, istekleri veya görüşülecek konular" style="width:100%; border:1px solid var(--line); border-radius:8px; background:var(--blue-050); padding:10px;"></textarea>
+                    </div>
+
+                    <div class="record-field span-2">
+                        <label>Özel Görüşme Notları</label>
+                        <textarea asp-for="Form.Notes" name="Notes" rows="4" placeholder="Görüşme sonrasında alınan özel ekip notları, sonraki aşamalar..." style="width:100%; border:1px solid var(--line); border-radius:8px; background:var(--blue-050); padding:10px;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</form>
+
+<script>
+    function toggleCustomerMode(isNew) {
+        const existingField = document.getElementById("existingCustomerField");
+        const newFields = document.getElementById("newCustomerFields");
+        
+        if (isNew) {
+            existingField.style.display = "none";
+            newFields.style.display = "grid";
+            
+            document.getElementsByName("NewCustomerDisplayName")[0].required = true;
+            document.getElementsByName("NewCustomerContactPerson")[0].required = true;
+        } else {
+            existingField.style.display = "block";
+            newFields.style.display = "none";
+            
+            document.getElementsByName("NewCustomerDisplayName")[0].required = false;
+            document.getElementsByName("NewCustomerContactPerson")[0].required = false;
+        }
+    }
+
+    // Set up tabs navigation specifically for Appointments form
+    document.querySelectorAll("#appointmentForm [data-tab-target]").forEach((tabButton) => {
+        tabButton.addEventListener("click", () => {
+            const target = tabButton.getAttribute("data-tab-target");
+            const form = tabButton.closest("#appointmentForm");
+
+            form.querySelectorAll("[data-tab-target]").forEach((button) => {
+                button.classList.toggle("active", button === tabButton);
+            });
+
+            form.querySelectorAll("[data-tab-panel]").forEach((panel) => {
+                panel.classList.toggle("active", panel.getAttribute("data-tab-panel") === target);
+            });
+        });
+    });
+</script>
