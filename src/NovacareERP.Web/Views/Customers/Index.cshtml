@@ -1,0 +1,127 @@
+@model NovacareERP.Application.Customers.CustomerListViewModel
+@using NovacareERP.Domain.Enums
+@{
+    ViewData["Title"] = "Musteriler";
+    var activeCustomerCount = Model.Customers.Count(customer => customer.IsActive);
+    var totalBalance = Model.Customers.Sum(customer => customer.Balance);
+    var selectedTypeText = Model.SelectedLegalType.HasValue
+        ? Model.LegalTypeOptions.First(option => option.Value == Model.SelectedLegalType.Value).Text
+        : "Tum Tipler";
+}
+
+<section class="customer-hero">
+    <div class="customer-title">
+        <span class="eyebrow">Cari yonetimi</span>
+        <h1>Musteriler</h1>
+        <p>Kucuk isletmelerden kurumsal firmalara kadar tum musteri kayitlarini tek, duzenli ve filtrelenebilir bir yapida yonetin.</p>
+    </div>
+    <div class="page-actions customer-actions">
+        <a class="btn-secondary-action" asp-controller="Home" asp-action="Index"><i class="bi bi-arrow-left"></i> Panele Don</a>
+        <a class="btn-primary-action" asp-controller="Customers" asp-action="Create"><i class="bi bi-plus"></i> Yeni Musteri</a>
+    </div>
+</section>
+
+@if (TempData["CustomerSaved"] is string message)
+{
+    <div class="notice-banner">@message</div>
+}
+
+<section class="customer-summary" aria-label="Musteri ozeti">
+    <article>
+        <span>Kayitli Musteri</span>
+        <strong>@Model.Customers.Count</strong>
+        <small>@selectedTypeText</small>
+    </article>
+    <article>
+        <span>Aktif Cari</span>
+        <strong>@activeCustomerCount</strong>
+        <small>Islem yapilabilir kayit</small>
+    </article>
+    <article>
+        <span>Toplam Bakiye</span>
+        <strong>@totalBalance.ToString("N0") TL</strong>
+        <small>Filtre sonucuna gore</small>
+    </article>
+    <article>
+        <span>Cari Tipleri</span>
+        <strong>@Model.LegalTypeOptions.Count</strong>
+        <small>Kurumsal ve bireysel</small>
+    </article>
+</section>
+
+<section class="customer-layout list-only">
+    <article class="panel table-panel">
+        <div class="panel-header">
+            <div>
+                <span class="eyebrow">Musteri listesi</span>
+                <h2>Kayitlar</h2>
+            </div>
+            <span class="panel-count">@Model.Customers.Count kayit</span>
+        </div>
+
+        <form class="filter-bar" asp-controller="Customers" asp-action="Index" method="get">
+            <label>
+                Cari Tipi
+                <select name="legalType">
+                    <option value="">Tum musteriler</option>
+                    @foreach (var option in Model.LegalTypeOptions)
+                    {
+                        <option value="@((int)option.Value)" selected="@(Model.SelectedLegalType == option.Value)">
+                            @option.Text
+                        </option>
+                    }
+                </select>
+            </label>
+            <label>
+                Arama
+                <input type="search" name="searchTerm" value="@Model.SearchTerm" placeholder="Unvan, kod, yetkili veya vergi no" />
+            </label>
+            <button class="btn-primary-action" type="submit"><i class="bi bi-search"></i> Filtrele</button>
+        </form>
+
+        <div class="customer-table">
+            <div class="customer-row head">
+                <span>Kod / Unvan</span>
+                <span>Cari Tipi</span>
+                <span>Sorumlu Kisi</span>
+                <span>Iletisim</span>
+                    <span>Bakiye</span>
+                </div>
+            @if (Model.Customers.Count == 0)
+            {
+                <div class="empty-state">
+                    <strong>Bu filtreye uygun musteri bulunamadi.</strong>
+                    <small>Filtreyi temizleyebilir veya yeni musteri kaydi olusturabilirsiniz.</small>
+                </div>
+            }
+            else
+            {
+                @foreach (var customer in Model.Customers)
+                {
+                    <a class="customer-row customer-row-link" asp-controller="Customers" asp-action="Details" asp-route-id="@customer.Id">
+                        <span>
+                            <strong>@customer.DisplayName</strong>
+                            <small>@customer.Code - @customer.City</small>
+                        </span>
+                        <span>
+                            <em class="pill blue">@customer.LegalTypeText</em>
+                            <small>@customer.TaxOffice @customer.TaxNumber</small>
+                        </span>
+                        <span>
+                            <strong>@customer.ContactPerson</strong>
+                            <small>@customer.ContactTitle</small>
+                        </span>
+                        <span>
+                            <strong>@customer.Phone</strong>
+                            <small>@customer.Email</small>
+                        </span>
+                        <span>
+                            <strong>@customer.Balance.ToString("N0") @customer.CurrencyCode</strong>
+                            <small>Limit @customer.CreditLimit.ToString("N0") @customer.CurrencyCode</small>
+                        </span>
+                    </a>
+                }
+            }
+        </div>
+    </article>
+</section>

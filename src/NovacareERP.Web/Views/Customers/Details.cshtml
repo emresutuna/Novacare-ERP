@@ -1,0 +1,121 @@
+@model NovacareERP.Application.Customers.CustomerListItemViewModel
+@{
+    ViewData["Title"] = Model.DisplayName;
+    var availableLimit = Math.Max(Model.CreditLimit - Math.Max(Model.Balance, 0), 0);
+}
+
+<section class="customer-detail-hero">
+    <div class="customer-profile-card">
+        <div class="customer-avatar">@Model.DisplayName[..1].ToUpperInvariant()</div>
+        <div>
+            <span class="eyebrow">Musteri karti</span>
+            <h1>@Model.DisplayName</h1>
+            <div class="customer-meta">
+                <span>@Model.Code</span>
+                <span>@Model.LegalTypeText</span>
+                <span>@(string.IsNullOrWhiteSpace(Model.City) ? "Sehir girilmedi" : Model.City)</span>
+            </div>
+            <div class="customer-contact-line">
+                <span>@(string.IsNullOrWhiteSpace(Model.ContactPerson) ? "Yetkili kisi yok" : Model.ContactPerson)</span>
+                <span>@(string.IsNullOrWhiteSpace(Model.Phone) ? "Telefon yok" : Model.Phone)</span>
+                <span>@(string.IsNullOrWhiteSpace(Model.Email) ? "E-posta yok" : Model.Email)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-note-card">
+        <strong>Not</strong>
+        <p>Bu musteriyle ilgili kisa ekip notlari ve hatirlatmalar burada tutulacak.</p>
+    </div>
+</section>
+
+<section class="detail-actions">
+    <a class="btn-secondary-action" asp-controller="Customers" asp-action="Index"><i class="bi bi-arrow-left"></i> Listeye Don</a>
+    <button class="btn-primary-action" type="button"><i class="bi bi-plus"></i> Satis Yap</button>
+    <button class="btn-secondary-action" type="button"><i class="bi bi-currency-exchange"></i> Tahsilat Gir</button>
+    <button class="btn-secondary-action" type="button"><i class="bi bi-receipt"></i> Teklif Hazirla</button>
+    <button class="btn-secondary-action" type="button"><i class="bi bi-envelope-fill"></i> Mesaj Gonder</button>
+</section>
+
+<section class="detail-metrics" aria-label="Musteri finans ozeti">
+    <article class="metric-balance">
+        <span>Acik Bakiye</span>
+        <strong>@Model.Balance.ToString("N0") @Model.CurrencyCode</strong>
+        <small>Guncel cari durum</small>
+    </article>
+    <article class="metric-limit">
+        <span>Risk Limiti</span>
+        <strong>@Model.CreditLimit.ToString("N0") @Model.CurrencyCode</strong>
+        <small>Kartta tanimli limit</small>
+    </article>
+    <article class="metric-available">
+        <span>Kullanilabilir Limit</span>
+        <strong>@availableLimit.ToString("N0") @Model.CurrencyCode</strong>
+        <small>Limit - acik bakiye</small>
+    </article>
+    <article class="metric-turnover">
+        <span>Ciro</span>
+        <strong>0 TL</strong>
+        <small>Hareketler baglanacak</small>
+    </article>
+</section>
+
+<section class="detail-grid">
+    <article class="detail-panel">
+        <div class="detail-panel-header">
+            <div>
+                <span class="eyebrow">Hareketler</span>
+                <h2>Onceki satislar</h2>
+            </div>
+            <button class="icon-button" type="button" aria-label="Paneli daralt"><i class="bi bi-caret-down-fill"></i></button>
+        </div>
+        <div class="detail-empty">
+            <strong>Kayitli satis bulunmuyor.</strong>
+            <small>Bu musterinin ilk satis faturasini buradan olusturabilirsiniz.</small>
+        </div>
+    </article>
+
+    <article class="detail-panel">
+        <div class="detail-panel-header">
+            <div>
+                <span class="eyebrow">Tahsilatlar</span>
+                <h2>Onceki odemeler</h2>
+            </div>
+            <button class="icon-button" type="button" aria-label="Paneli daralt"><i class="bi bi-caret-down-fill"></i></button>
+        </div>
+        <div class="detail-empty">
+            <strong>Kayitli odeme bulunmuyor.</strong>
+            <small>Tahsilat girdikce odeme gecmisi burada gorunecek.</small>
+        </div>
+    </article>
+
+    <article class="detail-panel">
+        <div class="detail-panel-header">
+            <div>
+                <span class="eyebrow">Teklifler</span>
+                <h2>Verilen teklifler</h2>
+            </div>
+            <button class="icon-button" type="button" aria-label="Paneli daralt"><i class="bi bi-caret-down-fill"></i></button>
+        </div>
+        <div class="detail-table">
+            <div class="detail-table-row head"><span>Tarih</span><span>No</span><span>Gecerlilik</span><span>Tutar</span></div>
+            <div class="detail-table-row"><span>30.05.2026</span><span>1</span><span>30.05.2026</span><strong>1.250.000 TL</strong></div>
+        </div>
+    </article>
+
+    <article class="detail-panel">
+        <div class="detail-panel-header">
+            <div>
+                <span class="eyebrow">Bilgiler</span>
+                <h2>Cari ozeti</h2>
+            </div>
+        </div>
+        <dl class="detail-info-list">
+            <div><dt>Vergi Dairesi</dt><dd>@(string.IsNullOrWhiteSpace(Model.TaxOffice) ? "-" : Model.TaxOffice)</dd></div>
+            <div><dt>Vergi / TCKN</dt><dd>@(string.IsNullOrWhiteSpace(Model.TaxNumber) ? "-" : Model.TaxNumber)</dd></div>
+            <div><dt>Para Birimi</dt><dd>@Model.CurrencyCode</dd></div>
+            <div><dt>Sorumlu</dt><dd>@(string.IsNullOrWhiteSpace(Model.ContactTitle) ? "-" : Model.ContactTitle)</dd></div>
+            <div><dt>Durum</dt><dd>@(Model.IsActive ? "Aktif" : "Pasif")</dd></div>
+        </dl>
+    </article>
+</section>

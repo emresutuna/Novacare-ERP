@@ -1,4 +1,5 @@
 using NovacareERP.Application.Dashboard;
+using NovacareERP.Application.Customers;
 using NovacareERP.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IDashboardSnapshotService, DashboardSnapshotService>();
+builder.Services.AddSingleton<ICustomerDirectoryService, InMemoryCustomerDirectoryService>();
 
 var app = builder.Build();
 
@@ -18,6 +20,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();

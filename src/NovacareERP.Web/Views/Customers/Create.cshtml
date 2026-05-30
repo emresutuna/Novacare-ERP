@@ -1,0 +1,207 @@
+@model NovacareERP.Application.Customers.CustomerListViewModel
+@{
+    ViewData["Title"] = "Yeni Musteri";
+}
+
+<form class="customer-create" asp-controller="Customers" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <section class="record-hero">
+        <div>
+            <span class="eyebrow">Yeni musteri karti</span>
+            <h1>Musteri olustur</h1>
+            <p>Firma kimligi, iletisim, cari limitler ve sube bilgilerini tek kayit akisi icinde duzenleyin.</p>
+        </div>
+        <div class="record-toolbar">
+            <a class="btn-secondary-action back-action" asp-controller="Customers" asp-action="Index"><i class="bi bi-arrow-left"></i> Geri Don</a>
+            <button class="btn-primary-action save-action" type="submit">KAYDET</button>
+        </div>
+    </section>
+
+    <section class="record-workspace">
+        <aside class="record-side-nav" aria-label="Musteri kayit bolumleri">
+            <button class="active" type="button" data-tab-target="identity">
+                <i class="bi bi-person-fill"></i>
+                <span><strong>Kimlik</strong><small>Unvan ve cari tipi</small></span>
+            </button>
+            <button type="button" data-tab-target="contact">
+                <i class="bi bi-envelope-fill"></i>
+                <span><strong>Iletisim</strong><small>Yetkili ve adres</small></span>
+            </button>
+            <button type="button" data-tab-target="account">
+                <i class="bi bi-currency-exchange"></i>
+                <span><strong>Cari</strong><small>Vergi, limit, vade</small></span>
+            </button>
+            <button type="button" data-tab-target="other">
+                <i class="bi bi-gear-fill"></i>
+                <span><strong>Diger</strong><small>Sinif, kod ve not</small></span>
+            </button>
+            <button type="button" data-tab-target="branches">
+                <i class="bi bi-buildings-fill"></i>
+                <span><strong>Subeler</strong><small>Teslimat noktalari</small></span>
+            </button>
+        </aside>
+
+        <section class="record-card">
+            <div class="record-tab-panel active" data-tab-panel="identity">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Kimlik</span>
+                        <h2>Temel musteri bilgileri</h2>
+                    </div>
+                    <span class="panel-count">Zorunlu alan</span>
+                </div>
+
+                <div class="record-grid identity-record-grid">
+                    <div class="record-field wide">
+                        <label>Firma / Musteri Unvani</label>
+                        <input asp-for="Form.DisplayName" name="DisplayName" placeholder="Firma veya kisi adi" />
+                    </div>
+
+                    <div class="record-field">
+                        <label>Cari Tipi</label>
+                        <select asp-for="Form.LegalType" name="LegalType">
+                            @foreach (var option in Model.LegalTypeOptions)
+                            {
+                                <option value="@((int)option.Value)">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <button class="logo-dropzone" type="button">
+                        <i class="bi bi-camera-fill"></i>
+                        <span><strong>Logo veya gorsel</strong><small>Opsiyonel</small></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="record-tab-panel" data-tab-panel="contact">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Iletisim</span>
+                        <h2>Yetkili ve adres bilgileri</h2>
+                    </div>
+                </div>
+
+                <div class="record-grid two-column">
+                    <div class="record-field">
+                        <label>E-Posta</label>
+                        <input asp-for="Form.Email" name="Email" type="email" placeholder="ornek@firma.com" />
+                        <small>Birden fazla adres icin virgul kullanabilirsiniz.</small>
+                    </div>
+                    <div class="record-field">
+                        <label>Telefon</label>
+                        <input asp-for="Form.Phone" name="Phone" type="tel" placeholder="+90 555 000 00 00" />
+                    </div>
+                    <div class="record-field">
+                        <label>Yetkili Kisi</label>
+                        <input asp-for="Form.ContactPerson" name="ContactPerson" placeholder="Yetkili adi soyadi" />
+                    </div>
+                    <div class="record-field">
+                        <label>Gorevi</label>
+                        <input asp-for="Form.ContactTitle" name="ContactTitle" placeholder="Finans, satin alma..." />
+                    </div>
+                    <div class="record-field">
+                        <label>Sehir</label>
+                        <input asp-for="Form.City" name="City" placeholder="Istanbul" />
+                    </div>
+                    <div class="record-field span-2">
+                        <label>Adres</label>
+                        <textarea asp-for="Form.Address" name="Address" rows="4" placeholder="Fatura ve teslimat adresi"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="record-tab-panel" data-tab-panel="account">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Cari</span>
+                        <h2>Finansal ve vergi ayarlari</h2>
+                    </div>
+                </div>
+
+                <div class="record-grid two-column">
+                    <div class="record-field">
+                        <label>Vergi Dairesi</label>
+                        <input asp-for="Form.TaxOffice" name="TaxOffice" placeholder="Vergi dairesi" />
+                    </div>
+                    <div class="record-field">
+                        <label>Vergi / TC Kimlik No</label>
+                        <input asp-for="Form.TaxNumber" name="TaxNumber" placeholder="TCKN veya vergi no" />
+                    </div>
+                    <div class="record-field">
+                        <label>Para Birimi</label>
+                        <select asp-for="Form.CurrencyCode" name="CurrencyCode">
+                            <option>TRY</option>
+                            <option>USD</option>
+                            <option>EUR</option>
+                        </select>
+                    </div>
+                    <div class="record-field">
+                        <label>Risk Limiti</label>
+                        <input asp-for="Form.CreditLimit" name="CreditLimit" type="number" min="0" step="1000" placeholder="0" />
+                    </div>
+                    <div class="record-field">
+                        <label>Vade Gunu</label>
+                        <input asp-for="Form.PaymentTermDays" name="PaymentTermDays" type="number" min="0" placeholder="30" />
+                    </div>
+                    <div class="record-field">
+                        <label>Acilis Bakiyesi</label>
+                        <input type="number" placeholder="0" />
+                        <small>Musteri sizden alacakli ise eksi deger girin.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="record-tab-panel" data-tab-panel="other">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Diger</span>
+                        <h2>Operasyonel bilgiler</h2>
+                    </div>
+                </div>
+
+                <div class="record-grid two-column">
+                    <div class="record-field">
+                        <label>Siniflandirma</label>
+                        <select>
+                            <option value="">Seciniz</option>
+                            <option>Perakende</option>
+                            <option>Kurumsal</option>
+                        </select>
+                    </div>
+                    <div class="record-field">
+                        <label>Muhasebe Kodu</label>
+                        <input placeholder="Varsa muhasebe kodu veya barkod" />
+                    </div>
+                    <div class="record-field">
+                        <label>Yetkili Calisan</label>
+                        <select>
+                            <option>Genel erisim</option>
+                            <option>Sadece secili calisanlar</option>
+                        </select>
+                    </div>
+                    <div class="record-field span-2">
+                        <label>Not</label>
+                        <textarea rows="5" placeholder="Musteriyle ilgili ekip notlari"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="record-tab-panel" data-tab-panel="branches">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Subeler</span>
+                        <h2>Sevk ve teslimat noktalari</h2>
+                    </div>
+                </div>
+
+                <div class="branch-note">
+                    Musterinin birden fazla subesi varsa teslimat veya satis noktalarini burada takip edebilirsiniz.
+                    Bu alan sonraki adimda coklu sube kayit tablosuna baglanacak.
+                </div>
+                <button class="btn-primary-action small-action" type="button"><i class="bi bi-plus"></i> Sube ekle</button>
+            </div>
+        </section>
+    </section>
+</form>

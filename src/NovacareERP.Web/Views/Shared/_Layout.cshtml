@@ -7,7 +7,6 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/NovacareERP.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
     <div class="app-shell">
@@ -21,8 +20,8 @@
             </a>
 
             <nav class="sidebar-nav" aria-label="Ana menu">
-                <a class="active" href="#"><i class="bi bi-house-fill"></i><span>Kontrol Paneli</span></a>
-                <a href="#"><i class="bi bi-people-fill"></i><span>Cari Hesaplar</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i><span>Kontrol Paneli</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-area="" asp-controller="Customers" asp-action="Index"><i class="bi bi-people-fill"></i><span>Musteriler</span></a>
                 <a href="#"><i class="bi bi-cart-check-fill"></i><span>Satis Faturalari</span><b>+</b></a>
                 <a href="#"><i class="bi bi-box-seam-fill"></i><span>Alis Faturalari</span><b>+</b></a>
                 <a href="#"><i class="bi bi-currency-exchange"></i><span>Kasa ve Banka</span></a>
