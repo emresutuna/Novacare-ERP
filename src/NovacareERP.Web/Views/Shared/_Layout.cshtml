@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Finora ERP</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/NovacareERP.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/finora-logo.png" alt="Finora ERP" />
+                <span>
+                    <strong>Finora</strong>
+                    <small>ERP</small>
+                </span>
+            </a>
+
+            <nav class="sidebar-nav" aria-label="Ana menu">
+                <a class="active" href="#"><i class="bi bi-house-fill"></i><span>Kontrol Paneli</span></a>
+                <a href="#"><i class="bi bi-people-fill"></i><span>Cari Hesaplar</span></a>
+                <a href="#"><i class="bi bi-cart-check-fill"></i><span>Satis Faturalari</span><b>+</b></a>
+                <a href="#"><i class="bi bi-box-seam-fill"></i><span>Alis Faturalari</span><b>+</b></a>
+                <a href="#"><i class="bi bi-currency-exchange"></i><span>Kasa ve Banka</span></a>
+                <a href="#"><i class="bi bi-tags-fill"></i><span>Urunler</span></a>
+                <a href="#"><i class="bi bi-truck"></i><span>Tedarikciler</span></a>
+                <a href="#"><i class="bi bi-receipt"></i><span>Giderler</span></a>
+                <a href="#"><i class="bi bi-graph-up-arrow"></i><span>Raporlar</span></a>
+                <a href="#"><i class="bi bi-gear-fill"></i><span>Ayarlar</span></a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#"><i class="bi bi-question-circle-fill"></i><span>Yardim</span></a>
+                <a href="#"><i class="bi bi-lock-fill"></i><span>Guvenli Cikis</span></a>
+            </div>
+        </aside>
+
+        <div class="workspace">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="icon-button" type="button" aria-label="Menuyu daralt"><i class="bi bi-list"></i></button>
+                    <label class="global-search">
+                        <i class="bi bi-search"></i>
+                        <input type="search" placeholder="Cari, fatura, urun veya islem ara" />
+                    </label>
+                </div>
+
+                <div class="topbar-actions">
+                    <button class="quick-add" type="button"><i class="bi bi-plus"></i> Yeni Islem</button>
+                    <button class="calendar-button" type="button" aria-label="Takvim">
+                        <i class="bi bi-calendar3"></i>
+                        <span>3</span>
+                    </button>
+                    <button class="avatar-button" type="button" aria-label="Kullanici profili">
+                        <span class="avatar"></span>
+                        <span>Emre Sutuna</span>
+                        <i class="bi bi-caret-down-fill"></i>
+                    </button>
+                </div>
+            </header>
+
+            <main role="main" class="content-area">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

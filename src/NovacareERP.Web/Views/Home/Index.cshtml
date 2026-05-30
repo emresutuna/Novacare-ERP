@@ -1,0 +1,171 @@
+@model NovacareERP.Application.Customers.CustomerFormViewModel
+@using NovacareERP.Application.Dashboard
+@{
+    ViewData["Title"] = "Kontrol Paneli";
+    var summary = (DashboardSummary)ViewBag.Summary;
+}
+
+<section class="page-heading">
+    <div>
+        <span class="eyebrow">Bugunun ozeti</span>
+        <h1>Kontrol Paneli</h1>
+        <p>Finansal durum, acik isler ve en sik kullanilan ERP islemleri tek ekranda.</p>
+    </div>
+    <div class="page-actions">
+        <button class="btn-secondary-action" type="button"><i class="bi bi-download"></i> Rapor Al</button>
+        <button class="btn-primary-action" type="button"><i class="bi bi-plus"></i> Fatura Olustur</button>
+    </div>
+</section>
+
+<section class="metric-strip" aria-label="Finansal ozet">
+    <article class="metric-card income">
+        <span>Aylik Gelir</span>
+        <strong>@summary.MonthlyIncome.ToString("N0") TL</strong>
+        <small>Gecen aya gore +12%</small>
+    </article>
+    <article class="metric-card expense">
+        <span>Aylik Gider</span>
+        <strong>@summary.MonthlyExpense.ToString("N0") TL</strong>
+        <small>Kontrol altinda</small>
+    </article>
+    <article class="metric-card warning">
+        <span>Acik Fatura</span>
+        <strong>@summary.OpenInvoiceTotal.ToString("N0") TL</strong>
+        <small>@summary.OpenInvoiceCount adet bekliyor</small>
+    </article>
+    <article class="metric-card cash">
+        <span>Kasa/Banka</span>
+        <strong>@summary.CashBalance.ToString("N0") TL</strong>
+        <small>Nakit akisi pozitif</small>
+    </article>
+</section>
+
+<section class="erp-grid">
+    <article class="panel quick-panel">
+        <div class="panel-header">
+            <div>
+                <span class="eyebrow">Hizli islemler</span>
+                <h2>En cok kullanilanlar</h2>
+            </div>
+        </div>
+        <div class="quick-actions">
+            <button type="button"><i class="bi bi-people-fill"></i><span>Cari ekle</span></button>
+            <button type="button"><i class="bi bi-cart-check-fill"></i><span>Satis faturasi</span></button>
+            <button type="button"><i class="bi bi-receipt"></i><span>Gider gir</span></button>
+            <button type="button"><i class="bi bi-currency-exchange"></i><span>Tahsilat al</span></button>
+        </div>
+    </article>
+
+    <article class="panel task-panel">
+        <div class="panel-header">
+            <div>
+                <span class="eyebrow">Is listesi</span>
+                <h2>Bugun dikkat isteyenler</h2>
+            </div>
+            <button class="ghost-button" type="button">Tumunu gor</button>
+        </div>
+        <ul class="task-list">
+            <li>
+                <span class="status-dot green"></span>
+                <div><strong>5 tahsilat bekliyor</strong><small>Vadesi bugun dolan cariler</small></div>
+                <em>18.400 TL</em>
+            </li>
+            <li>
+                <span class="status-dot orange"></span>
+                <div><strong>3 fatura onay bekliyor</strong><small>Taslak satis faturalari</small></div>
+                <em>12.900 TL</em>
+            </li>
+            <li>
+                <span class="status-dot blue"></span>
+                <div><strong>2 banka hareketi eslesmedi</strong><small>Manuel kontrol onerilir</small></div>
+                <em>Kontrol</em>
+            </li>
+        </ul>
+    </article>
+</section>
+
+<section class="work-surface">
+    <article class="panel form-panel">
+        <div class="panel-header">
+            <div>
+                <span class="eyebrow">Yeni cari</span>
+                <h2>Cari karti</h2>
+            </div>
+            <div class="segmented">
+                <button class="active" type="button">Musteri</button>
+                <button type="button">Tedarikci</button>
+            </div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Musteri bilgileri">
+            <button class="tab active" type="button"><i class="bi bi-person-fill"></i> Kimlik</button>
+            <button class="tab" type="button"><i class="bi bi-envelope-fill"></i> Iletisim</button>
+            <button class="tab" type="button"><i class="bi bi-currency-exchange"></i> Cari</button>
+            <button class="tab" type="button"><i class="bi bi-buildings-fill"></i> Subeler</button>
+        </div>
+
+        <div class="form-body">
+            <div class="identity-grid">
+                <div class="form-column">
+                    <label for="displayName">Isim / Unvani</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-person-fill"></i>
+                        <input id="displayName" type="text" value="@Model.DisplayName" />
+                    </div>
+                </div>
+
+                <button class="image-upload" type="button" aria-label="Resim ekle">
+                    <i class="bi bi-camera-fill"></i>
+                    <span>Logo Ekle</span>
+                </button>
+            </div>
+
+            <div class="details-grid">
+                <label>
+                    Vergi No
+                    <input type="text" value="@Model.TaxNumber" placeholder="1111111111" />
+                </label>
+                <label>
+                    Vergi Dairesi
+                    <input type="text" value="@Model.TaxOffice" placeholder="Kadikoy" />
+                </label>
+                <label>
+                    E-posta
+                    <input type="email" value="@Model.Email" placeholder="ornek@firma.com" />
+                </label>
+                <label>
+                    Telefon
+                    <input type="tel" value="@Model.Phone" placeholder="+90 555 000 00 00" />
+                </label>
+                <label>
+                    Risk Limiti
+                    <input type="number" value="@Model.CreditLimit" />
+                </label>
+                <label>
+                    Vade Gunu
+                    <input type="number" value="@Model.PaymentTermDays" />
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-secondary-action" type="button"><i class="bi bi-arrow-left"></i> Vazgec</button>
+                <button class="btn-primary-action" type="button"><i class="bi bi-check-lg"></i> Cariyi Kaydet</button>
+            </div>
+        </div>
+    </article>
+
+    <article class="panel table-panel">
+        <div class="panel-header">
+            <div>
+                <span class="eyebrow">Son hareketler</span>
+                <h2>Cari ve fatura akisi</h2>
+            </div>
+        </div>
+        <div class="simple-table">
+            <div class="table-row head"><span>Islem</span><span>Cari</span><span>Tutar</span><span>Durum</span></div>
+            <div class="table-row"><span>Satis faturasi</span><span>Eyup Biradli</span><span>8.400 TL</span><em class="pill green">Odendi</em></div>
+            <div class="table-row"><span>Gider</span><span>Ofis kirasi</span><span>14.000 TL</span><em class="pill orange">Bekliyor</em></div>
+            <div class="table-row"><span>Tahsilat</span><span>Nova Medikal</span><span>22.500 TL</span><em class="pill blue">Banka</em></div>
+        </div>
+    </article>
+</section>

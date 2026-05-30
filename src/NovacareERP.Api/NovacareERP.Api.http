@@ -1,0 +1,6 @@
+@NovacareERP.Api_HostAddress = http://localhost:5027
+
+GET {{NovacareERP.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
