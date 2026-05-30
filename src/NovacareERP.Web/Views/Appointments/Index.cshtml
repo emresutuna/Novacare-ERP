@@ -1,16 +1,27 @@
 @model NovacareERP.Application.Appointments.AppointmentListViewModel
 @{
     ViewData["Title"] = "Randevular";
+
+    static string Filled(string? value, string fallback) => string.IsNullOrWhiteSpace(value) ? fallback : value;
+
+    static string ShortText(string? value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "Detay henuz girilmedi.";
+        }
+
+        return value.Length <= maxLength ? value : value[..maxLength] + "...";
+    }
 }
 
 <section class="customer-hero">
     <div class="customer-title">
         <span class="eyebrow">Ziyaret & Planlama</span>
-        <h1>Müşteri Randevuları</h1>
-        <p>Müşteri ziyaretlerini, görüşme detaylarını ve müşteri taleplerini genel uygulama tasarımlarına sadık kalarak tek bir panelden kontrol edin.</p>
+        <h1>Musteri Randevulari</h1>
+        <p>Musteri ziyaretlerini, gorusme detaylarini, talepleri ve takip notlarini tek bir kullanisli ekrandan yonetin.</p>
     </div>
     <div class="page-actions customer-actions">
-        <a class="btn-secondary-action" asp-controller="Home" asp-action="Index"><i class="bi bi-arrow-left"></i> Panele Dön</a>
         <a class="btn-primary-action" asp-controller="Appointments" asp-action="Create"><i class="bi bi-plus"></i> Yeni Randevu</a>
     </div>
 </section>
@@ -20,21 +31,21 @@
     <div class="notice-banner">@message</div>
 }
 
-<section class="customer-summary" aria-label="Randevu özeti">
+<section class="customer-summary" aria-label="Randevu ozeti">
     <article>
-        <span>Kayıtlı Randevu</span>
+        <span>Kayitli Randevu</span>
         <strong>@Model.Appointments.Count</strong>
-        <small>Toplam randevu sayısı</small>
+        <small>Toplam gorusme plani</small>
     </article>
     <article style="border-top-color: var(--orange-500);">
-        <span>Bugünkü Görüşmeler</span>
+        <span>Bugunku Gorusmeler</span>
         <strong>@Model.Appointments.Count(a => a.Date == DateOnly.FromDateTime(DateTime.Today))</strong>
-        <small>Günlük plan</small>
+        <small>Gunluk ajanda</small>
     </article>
     <article style="border-top-color: var(--blue-100);">
-        <span>Kayıtlı Müşteri Havuzu</span>
+        <span>Musteri Havuzu</span>
         <strong>@Model.Customers.Count</strong>
-        <small>Seçilebilir cari kartı</small>
+        <small>Secilebilir cari karti</small>
     </article>
 </section>
 
@@ -43,7 +54,7 @@
         <div class="panel-header">
             <div>
                 <span class="eyebrow">Randevu listesi</span>
-                <h2>Görüşme Planları</h2>
+                <h2>Gorusme Planlari</h2>
             </div>
             <span class="panel-count">@Model.Appointments.Count randevu</span>
         </div>
@@ -55,57 +66,71 @@
             </label>
             <label>
                 Arama
-                <input type="search" name="searchTerm" value="@Model.SearchTerm" placeholder="Firma adı, yetkili, başlık veya talep ara" />
+                <input type="search" name="searchTerm" value="@Model.SearchTerm" placeholder="Firma, yetkili, baslik veya talep ara" />
             </label>
             <button class="btn-primary-action" type="submit"><i class="bi bi-search"></i> Filtrele</button>
         </form>
 
-        <div class="customer-table">
-            <div class="customer-row head" style="grid-template-columns: 1.25fr 1fr 1fr 1.2fr 0.85fr;">
-                <span>Başlık / Konu</span>
-                <span>Firma Bilgileri</span>
-                <span>İletişim / Görüşen Kişi</span>
-                <span>Tarih & Saat</span>
-                <span>İşlemler</span>
-            </div>
+        <div class="appointment-list">
             @if (Model.Appointments.Count == 0)
             {
                 <div class="empty-state">
-                    <strong>Bu filtreye uygun randevu bulunamadı.</strong>
-                    <small>Filtreyi temizleyebilir veya yeni randevu oluşturabilirsiniz.</small>
+                    <strong>Bu filtreye uygun randevu bulunamadi.</strong>
+                    <small>Filtreyi temizleyebilir veya yeni randevu olusturabilirsiniz.</small>
                 </div>
             }
             else
             {
                 @foreach (var app in Model.Appointments)
                 {
-                    <div class="customer-row" style="grid-template-columns: 1.25fr 1fr 1fr 1.2fr 0.85fr; align-items: center; min-height: 68px;">
-                        <span>
-                            <strong>@app.Title</strong>
-                            <small style="color: var(--muted); margin-top: 4px; display: block;">@app.CustomerDemand</small>
-                        </span>
-                        <span>
-                            <strong>@app.CompanyName</strong>
-                            <small style="color: var(--muted); margin-top: 4px; display: block;">Cari Bağlantılı</small>
-                        </span>
-                        <span>
-                            <strong>@app.ContactPerson</strong>
-                            <small style="color: var(--muted); margin-top: 4px; display: block;">@app.CustomerName</small>
-                        </span>
-                        <span>
-                            <strong>@app.Date.ToString("dd.MM.yyyy")</strong>
-                            <small style="color: var(--muted); margin-top: 4px; display: block;"><i class="bi bi-clock"></i> @app.Time.ToString("HH:mm")</small>
-                        </span>
-                        <span>
-                            <div style="display: flex; gap: 8px;">
-                                <a class="ghost-button" asp-controller="Appointments" asp-action="Details" asp-route-id="@app.Id" style="border-radius: 6px; padding: 6px 12px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 13px;"><i class="bi bi-eye"></i> Detay</a>
-                                <form asp-controller="Appointments" asp-action="Delete" asp-route-id="@app.Id" method="post" onsubmit="return confirm('Randevuyu silmek istediğinize emin misiniz?');" style="margin:0;">
-                                    @Html.AntiForgeryToken()
-                                    <button class="ghost-button" type="submit" style="background: #fdf2f2; color: #d11a2a; border: 0; border-radius: 6px; padding: 6px 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px;"><i class="bi bi-trash"></i> Sil</button>
-                                </form>
+                    <article class="appointment-card">
+                        <div class="appointment-date-box">
+                            <strong>@app.Date.ToString("dd")</strong>
+                            <span>@app.Date.ToString("MMM")</span>
+                            <small><i class="bi bi-clock"></i> @app.Time.ToString("HH:mm")</small>
+                        </div>
+
+                        <div class="appointment-main">
+                            <div class="appointment-title-row">
+                                <div>
+                                    <strong>@Filled(app.Title, "Planli musteri gorusmesi")</strong>
+                                    <small>@ShortText(app.CustomerDemand, 140)</small>
+                                </div>
+                                <em class="pill blue">Cari Baglantili</em>
                             </div>
-                        </span>
-                    </div>
+
+                            <div class="appointment-meta-grid">
+                                <span>
+                                    <i class="bi bi-building"></i>
+                                    <b>Firma</b>
+                                    @Filled(app.CompanyName, "Firma secilmemis")
+                                </span>
+                                <span>
+                                    <i class="bi bi-person-lines-fill"></i>
+                                    <b>Musteri Yetkilisi</b>
+                                    @Filled(app.CustomerName, "Yetkili belirtilmedi")
+                                </span>
+                                <span>
+                                    <i class="bi bi-person-check-fill"></i>
+                                    <b>Gorusecek Kisi</b>
+                                    @Filled(app.ContactPerson, "Emre Sutuna")
+                                </span>
+                                <span>
+                                    <i class="bi bi-journal-text"></i>
+                                    <b>Not</b>
+                                    @ShortText(app.Notes, 80)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="appointment-actions">
+                            <a class="ghost-button" asp-controller="Appointments" asp-action="Details" asp-route-id="@app.Id"><i class="bi bi-eye"></i> Detay</a>
+                            <form asp-controller="Appointments" asp-action="Delete" asp-route-id="@app.Id" method="post" onsubmit="return confirm('Randevuyu silmek istediginize emin misiniz?');">
+                                @Html.AntiForgeryToken()
+                                <button class="ghost-button danger" type="submit"><i class="bi bi-trash"></i> Sil</button>
+                            </form>
+                        </div>
+                    </article>
                 }
             }
         </div>

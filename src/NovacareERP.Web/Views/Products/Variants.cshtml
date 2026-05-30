@@ -1,0 +1,45 @@
+@model NovacareERP.Application.Products.ProductWorkspaceViewModel
+@{
+    ViewData["Title"] = "Urun Varyantlari";
+}
+
+<section class="proposal-toolbar product-toolbar">
+    <div class="module-actions">
+        <button class="btn-primary-action" type="button" data-modal-open="variant-modal"><i class="bi bi-check-lg"></i> Yeni Varyant Ekle</button>
+    </div>
+</section>
+
+<section class="product-success-note">
+    Bizimhesap uzerinde "renk", "ebat"... gibi dilediginiz sekilde urun varyanti tanimlayabilir ve urunlerinizde bunlari secebilirsiniz.
+    <br />Yeni varyant tanimi yapmak icin yukarida bulunan <strong>Yeni Varyant Ekle</strong> dugmesini kullanabilirsiniz.
+</section>
+
+<section class="product-card-list">
+    @foreach (var variant in Model.Variants)
+    {
+        <article class="product-mini-card">
+            <div>
+                <strong>@variant.Name</strong>
+                <span>@variant.ValuesText</span>
+            </div>
+            <b>@variant.ProductCount urun</b>
+        </article>
+    }
+</section>
+
+<div class="modal-preview" id="variant-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title">
+            <h2>Varyant Tanimi</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <form class="modal-form catalog-form">
+            <label>Varyant Adi<input type="text" placeholder="or. Renk" /></label>
+            <label>Degerler<textarea rows="3" placeholder="Siyah, Beyaz, Gri"></textarea></label>
+            <label>Kullanim<select><option>Urun kartinda secilsin</option><option>Zorunlu alan olsun</option></select></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-primary-action" type="button" data-demo-submit="Varyant taslak olarak hazirlandi."><i class="bi bi-check-lg"></i> Kaydet</button>
+        </div>
+    </div>
+</div>

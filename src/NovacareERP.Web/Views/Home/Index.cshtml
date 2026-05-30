@@ -3,6 +3,16 @@
 @{
     ViewData["Title"] = "Kontrol Paneli";
     var summary = (DashboardSummary)ViewBag.Summary;
+
+    static string ShortText(string? value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "Detay henuz girilmedi.";
+        }
+
+        return value.Length <= maxLength ? value : value[..maxLength] + "...";
+    }
 }
 
 <section class="page-heading">
@@ -38,6 +48,47 @@
         <strong>@summary.CashBalance.ToString("N0") TL</strong>
         <small>Nakit akisi pozitif</small>
     </article>
+</section>
+
+<section class="panel dashboard-appointments">
+    <div class="panel-header">
+        <div>
+            <span class="eyebrow">Son 1 ay</span>
+            <h2>Aktif Randevular</h2>
+        </div>
+        <a class="ghost-button" asp-controller="Appointments" asp-action="Index">Tumunu gor</a>
+    </div>
+
+    @if (summary.RecentAppointments.Count == 0)
+    {
+        <div class="dashboard-empty-state">
+            <strong>Son 1 ay icinde aktif randevu yok.</strong>
+            <small>Yeni bir gorusme planladiginizda burada gorunecek.</small>
+            <a class="btn-primary-action" asp-controller="Appointments" asp-action="Create"><i class="bi bi-plus"></i> Randevu Ekle</a>
+        </div>
+    }
+    else
+    {
+        <div class="dashboard-appointment-list">
+            @foreach (var appointment in summary.RecentAppointments)
+            {
+                <a class="dashboard-appointment-card" asp-controller="Appointments" asp-action="Details" asp-route-id="@appointment.Id">
+                    <span class="dashboard-appointment-date">
+                        <strong>@appointment.Date.ToString("dd")</strong>
+                        <small>@appointment.Date.ToString("MMM")</small>
+                    </span>
+                    <span class="dashboard-appointment-info">
+                        <strong>@appointment.Title</strong>
+                        <small>@appointment.CompanyName - @ShortText(appointment.CustomerDemand, 86)</small>
+                    </span>
+                    <span class="dashboard-appointment-meta">
+                        <b><i class="bi bi-clock"></i> @appointment.Time.ToString("HH:mm")</b>
+                        <small>@appointment.ContactPerson</small>
+                    </span>
+                </a>
+            }
+        </div>
+    }
 </section>
 
 <section class="erp-grid">

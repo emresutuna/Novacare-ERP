@@ -1,0 +1,15 @@
+@model NovacareERP.Application.Settings.SettingsWorkspaceViewModel
+@{
+    ViewData["Title"] = "Tanimlar";
+}
+
+<section class="settings-grid">
+    @foreach (var item in Model.Definitions)
+    {
+        <article class="settings-card">
+            <i class="bi @item.IconName"></i>
+            <div><strong>@item.Title</strong><span>@item.Description</span></div>
+            <b>@item.StatusText</b>
+        </article>
+    }
+</section>

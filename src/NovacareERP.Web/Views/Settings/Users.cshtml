@@ -1,0 +1,44 @@
+@model NovacareERP.Application.Settings.SettingsWorkspaceViewModel
+@{
+    ViewData["Title"] = "Kullanicilar";
+}
+
+<section class="proposal-toolbar settings-toolbar">
+    <div class="module-actions">
+        <button class="btn-primary-action" type="button" data-modal-open="user-create-modal"><i class="bi bi-plus"></i> Yeni Kullanici Ekle</button>
+    </div>
+</section>
+
+<section class="settings-search-panel">
+    <form asp-controller="Settings" asp-action="Users" method="get">
+        <input type="search" name="searchTerm" value="@ViewBag.SearchTerm" placeholder="Kullanici Ara" />
+    </form>
+</section>
+
+<section class="settings-user-list">
+    @foreach (var user in Model.Users)
+    {
+        <a class="settings-user-row" asp-controller="Settings" asp-action="EditUser" asp-route-id="@user.Id">
+            <span class="settings-avatar"></span>
+            <strong>@user.FullName</strong>
+            <small>@user.RoleName</small>
+        </a>
+    }
+</section>
+
+<div class="modal-preview" id="user-create-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title">
+            <h2>Yeni Kullanici Ekle</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <form class="modal-form catalog-form">
+            <label>Isim<input type="text" placeholder="Kullanici adi" /></label>
+            <label>E-Posta<input type="email" placeholder="mail@firma.com" /></label>
+            <label>Rol<select><option>Yonetici</option><option>Muhasebe</option><option>Satis</option><option>Depo</option></select></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-primary-action" type="button" data-demo-submit="Kullanici daveti hazirlandi."><i class="bi bi-check-lg"></i> Kaydet</button>
+        </div>
+    </div>
+</div>

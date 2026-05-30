@@ -1,0 +1,41 @@
+@model NovacareERP.Application.Products.ProductWorkspaceViewModel
+@{
+    ViewData["Title"] = "Ozel Fiyat Listeleri";
+}
+
+<section class="proposal-toolbar product-toolbar">
+    <div class="module-actions">
+        <button class="btn-primary-action" type="button" data-modal-open="price-list-modal"><i class="bi bi-plus"></i> Yeni Fiyat Listesi Ekle</button>
+    </div>
+</section>
+
+<section class="product-card-list">
+    @foreach (var priceList in Model.PriceLists)
+    {
+        <article class="product-mini-card">
+            <div>
+                <strong>@priceList.Name</strong>
+                <span>@priceList.SegmentName</span>
+            </div>
+            <b>@priceList.ProductCount urun - @priceList.CurrencyCode</b>
+        </article>
+    }
+</section>
+
+<div class="modal-preview" id="price-list-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title">
+            <h2>Fiyat Listesi Tanimi</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <form class="modal-form catalog-form">
+            <label>Liste Adi<input type="text" placeholder="or. Bayi Fiyatlari" /></label>
+            <label>Para Birimi<select><option>TL</option><option>USD</option><option>EUR</option></select></label>
+            <label>Musteri Segmenti<select><option>Tum Musteriler</option><option>Bayiler</option><option>Kurumsal Musteriler</option></select></label>
+            <label>Fiyat Kuralı<select><option>Sabit fiyat girilecek</option><option>Standart fiyattan indirim</option><option>Standart fiyata artis</option></select></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-primary-action" type="button" data-demo-submit="Fiyat listesi taslak olarak hazirlandi."><i class="bi bi-check-lg"></i> Kaydet</button>
+        </div>
+    </div>
+</div>

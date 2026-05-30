@@ -1,0 +1,49 @@
+@model NovacareERP.Application.Products.ProductWorkspaceViewModel
+@{
+    ViewData["Title"] = "Kataloglar";
+}
+
+<section class="proposal-toolbar product-toolbar">
+    <div class="module-actions">
+        <button class="btn-primary-action" type="button" data-modal-open="catalog-modal"><i class="bi bi-plus"></i> Yeni Katalog Ekle</button>
+    </div>
+</section>
+
+<section class="product-info-note">
+    Yukaridaki <strong>Yeni Katalog Ekle</strong> dugmesine tiklayarak satisini yaptiginiz urunleriniz/hizmetleriniz icin resimli kataloglar hazirlayabilir ve bu kataloglari is ortaklariniz, musterileriniz ile elektronik ortamda paylasabilirsiniz.
+    <br />Boylece musterileriniz guncel urun ve fiyatlariniza online olarak erisebilirler.
+</section>
+
+<section class="product-card-list">
+    @foreach (var catalog in Model.Catalogs)
+    {
+        <article class="product-mini-card">
+            <div>
+                <strong>@catalog.Name</strong>
+                <span>@catalog.VisibilityText - @catalog.UpdatedAt.ToString("dd.MM.yyyy")</span>
+            </div>
+            <b>@catalog.ProductCount urun</b>
+        </article>
+    }
+</section>
+
+<div class="modal-preview" id="catalog-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title">
+            <h2>Katalog Tanimi</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <form class="modal-form catalog-form">
+            <label>Katalog Adi<input type="text" placeholder="or. 2019 Fiyat Listem" /></label>
+            <label>Aciklama<textarea rows="3" placeholder="istege bagli aciklama girebilirsiniz"></textarea></label>
+            <label>Fiyat Bilgisi<select><option>Satis fiyati gozuksun</option><option>Fiyat bilgisi gizlensin</option></select></label>
+            <label>Marka Bilgisi<select><option>Marka adi gozukmesin</option><option>Marka adi gozuksun</option></select></label>
+            <label>Stok Miktar Bilgisi<select><option>Stok miktarlari gozukmesin</option><option>Stok miktarlari gozuksun</option></select></label>
+            <label>Stok Durumu<select><option>Tum urunler gozuksun</option><option>Sadece stoktakiler gozuksun</option></select></label>
+            <label>Siralama<select><option>Urun ismine gore</option><option>Markaya gore</option></select><small>Paylastiginiz katalogdaki siralamayi belirleyebilirsiniz.</small></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-primary-action" type="button" data-demo-submit="Katalog taslak olarak hazirlandi."><i class="bi bi-check-lg"></i> Kaydet</button>
+        </div>
+    </div>
+</div>

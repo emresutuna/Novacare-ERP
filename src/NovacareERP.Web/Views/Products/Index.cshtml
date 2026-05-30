@@ -1,0 +1,177 @@
+@model NovacareERP.Application.Products.ProductDirectoryViewModel
+@{
+    ViewData["Title"] = "Urunler";
+}
+
+<section class="proposal-toolbar product-toolbar">
+    <div class="module-actions">
+        <button class="btn-primary-action" type="button" data-modal-open="product-create-modal"><i class="bi bi-plus"></i> Yeni Urun/Hizmet Ekle</button>
+        <button class="btn-warning-action" type="button" data-modal-open="product-excel-modal"><i class="bi bi-file-earmark-spreadsheet"></i> Excelden Urun Yukle</button>
+        <button class="btn-info-action" type="button" data-modal-open="product-bulk-update-modal"><i class="bi bi-arrow-repeat"></i> Toplu Urun Guncelleme</button>
+        <button class="btn-secondary-action" type="button" data-modal-open="product-image-modal"><i class="bi bi-image"></i> Toplu Resim Yukleme</button>
+        <button class="btn-warning-action" type="button" data-modal-open="product-delete-modal"><i class="bi bi-trash"></i> Toplu Urun Silme</button>
+    </div>
+</section>
+
+<section class="product-filter-panel">
+    <form class="product-filter-form" asp-controller="Products" asp-action="Index" method="get">
+        <div class="product-tabs">
+            <button type="button" class="active">Aktif Urunler</button>
+            <button type="button">Tum Urunler</button>
+        </div>
+        <select name="categoryName">
+            <option value="">Tum kategoriler</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category" selected="@(Model.CategoryName == category)">@category</option>
+            }
+        </select>
+        <select name="brandName">
+            <option value="">Tum markalar</option>
+            @foreach (var brand in Model.Brands)
+            {
+                <option value="@brand" selected="@(Model.BrandName == brand)">@brand</option>
+            }
+        </select>
+        <label class="proposal-search">
+            <span>Ara:</span>
+            <input type="search" name="searchTerm" value="@Model.SearchTerm" placeholder="arama... (en az 3 karakter)" />
+        </label>
+        <button class="btn-secondary-action compact-action" type="submit"><i class="bi bi-search"></i> Ara</button>
+    </form>
+</section>
+
+<section class="proposal-list-shell product-list-shell">
+    <div class="proposal-table product-table">
+        <div class="proposal-row head product-row">
+            <span>Urun Hizmet Adi</span>
+            <span>Satis Fiyati</span>
+            <span>Stok Miktari</span>
+        </div>
+        @if (Model.Products.Count == 0)
+        {
+            <div class="empty-state proposal-empty-state">
+                <div class="empty-state-icon"><i class="bi bi-box-seam-fill"></i></div>
+                <div>
+                    <span class="eyebrow">Urun bulunamadi</span>
+                    <strong>Filtreleri temizleyerek veya yeni urun ekleyerek listeyi doldurun.</strong>
+                    <small>Urunler, satis teklifleri ve faturalar icin ortak katalog olarak kullanilacak.</small>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var product in Model.Products)
+            {
+                <div class="proposal-row product-row product-line">
+                    <span>
+                        <strong>@product.Name</strong>
+                        <small class="pill blue">@product.CategoryName</small>
+                        <small class="pill orange">@product.BrandName</small>
+                        <small class="pill navy"><i class="bi bi-list"></i> @product.LocationName</small>
+                    </span>
+                    <span>@product.SalesPrice.ToString("N2") TL</span>
+                    <span>@product.StockQuantity @product.UnitName</span>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<section class="proposal-total-strip">
+    <span>Aktif urun / toplam stok</span>
+    <strong>@Model.ActiveProductCount urun - @Model.TotalStockQuantity stok</strong>
+</section>
+
+<div class="modal-preview" id="product-create-modal" aria-hidden="true">
+    <div class="modal-card product-modal wide-product-modal">
+        <div class="modal-title">
+            <h2>Yeni Urun/Hizmet Ekle</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <div class="helper-note">Urun veya hizmetinizi hizlica tanimlayin. Detayli stok, vergi ve fiyat bilgilerini daha sonra guncelleyebilirsiniz.</div>
+        <form class="modal-form product-form">
+            <label>Urun/Hizmet Adi<input type="text" placeholder="or. Microsoft Mouse" /></label>
+            <label>Tip<select><option>Urun</option><option>Hizmet</option></select></label>
+            <label>Kategori<input type="text" placeholder="or. Cevre Birimleri" /></label>
+            <label>Marka<input type="text" placeholder="or. Microsoft" /></label>
+            <label>Satis Fiyati<input type="number" placeholder="0,00" /></label>
+            <label>KDV<select><option>%20</option><option>%10</option><option>%1</option><option>%0</option></select></label>
+            <label>Stok Miktari<input type="number" placeholder="0" /></label>
+            <label>Birim<select><option>ad</option><option>kg</option><option>lt</option><option>saat</option></select></label>
+            <label class="span-2">Aciklama<textarea rows="3" placeholder="Kisa urun aciklamasi"></textarea></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-warning-action" type="button" data-modal-close><i class="bi bi-x-lg"></i> Vazgec</button>
+            <button class="btn-primary-action" type="button" data-demo-submit="Urun taslak olarak hazirlandi."><i class="bi bi-check-lg"></i> Kaydet</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-preview" id="product-excel-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title">
+            <h2>Excelden Urun Yukle</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <div class="helper-note">Urunlerinizi toplu eklemek icin Excel dosyanizi secin. Kolonlar: urun adi, kategori, marka, satis fiyati, stok.</div>
+        <form class="modal-form catalog-form">
+            <label>Dosya<input type="file" accept=".xlsx,.xls,.csv" /></label>
+            <label>Var olan urunler<select><option>Eslesenleri guncelle</option><option>Sadece yeni urunleri ekle</option></select></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-primary-action" type="button" data-demo-submit="Excel yukleme islemi kuyruga alindi."><i class="bi bi-upload"></i> Yukle</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-preview" id="product-bulk-update-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title">
+            <h2>Toplu Urun Guncelleme</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <form class="modal-form catalog-form">
+            <label>Alan<select><option>Satis fiyati</option><option>Kategori</option><option>Marka</option><option>KDV</option></select></label>
+            <label>Islem<select><option>Secili urunlere uygula</option><option>Filtrelenen urunlere uygula</option></select></label>
+            <label>Yeni Deger<input type="text" placeholder="Deger girin" /></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-info-action" type="button" data-demo-submit="Toplu guncelleme onay bekliyor."><i class="bi bi-arrow-repeat"></i> Guncelle</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-preview" id="product-image-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title">
+            <h2>Toplu Resim Yukleme</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <div class="helper-note">Resim dosya adlari urun adi veya stok kodu ile eslesirse otomatik baglanir.</div>
+        <form class="modal-form catalog-form">
+            <label>Resimler<input type="file" accept="image/*" multiple /></label>
+            <label>Eslestirme<select><option>Urun adina gore</option><option>Stok koduna gore</option></select></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-secondary-action" type="button" data-demo-submit="Resim yukleme hazirlandi."><i class="bi bi-image"></i> Yukle</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-preview" id="product-delete-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title danger-title">
+            <h2>Toplu Urun Silme</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <div class="helper-note danger-note">Bu islem secili urunleri pasife alacak. Fatura veya tekliflerde kullanilan urunler kalici silinmez.</div>
+        <form class="modal-form catalog-form">
+            <label>Silme kapsami<select><option>Secili urunler</option><option>Filtrelenen urunler</option></select></label>
+            <label>Onay<input type="text" placeholder="SIL yazin" /></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-danger-action" type="button" data-demo-submit="Toplu silme icin onay alindi."><i class="bi bi-trash"></i> Sil</button>
+        </div>
+    </div>
+</div>

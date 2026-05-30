@@ -1,0 +1,41 @@
+@model NovacareERP.Application.Products.ProductWorkspaceViewModel
+@{
+    ViewData["Title"] = "Depolar";
+}
+
+<section class="proposal-toolbar product-toolbar">
+    <div class="module-actions">
+        <button class="btn-primary-action" type="button" data-modal-open="warehouse-modal"><i class="bi bi-plus"></i> Yeni Depo Ekle</button>
+    </div>
+</section>
+
+<section class="product-card-list">
+    @foreach (var warehouse in Model.Warehouses)
+    {
+        <article class="product-mini-card warehouse-card">
+            <div>
+                <strong>@warehouse.Name</strong>
+                <span>@warehouse.Code - @warehouse.ResponsibleName</span>
+            </div>
+            <b>@warehouse.ProductCount urun</b>
+        </article>
+    }
+</section>
+
+<div class="modal-preview" id="warehouse-modal" aria-hidden="true">
+    <div class="modal-card product-modal">
+        <div class="modal-title">
+            <h2>Depo Tanimi</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <form class="modal-form catalog-form">
+            <label>Depo Adi<input type="text" placeholder="or. Ana Depo" /></label>
+            <label>Depo Kodu<input type="text" placeholder="DP-001" /></label>
+            <label>Sorumlu<input type="text" placeholder="Sorumlu kisi" /></label>
+            <label>Adres<textarea rows="3" placeholder="Depo adresi"></textarea></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-primary-action" type="button" data-demo-submit="Depo taslak olarak hazirlandi."><i class="bi bi-check-lg"></i> Kaydet</button>
+        </div>
+    </div>
+</div>

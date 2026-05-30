@@ -1,0 +1,87 @@
+@model NovacareERP.Application.Settings.SettingsUserViewModel
+@{
+    ViewData["Title"] = "Kullanici Duzenle";
+}
+
+<section class="proposal-editor-toolbar settings-editor-toolbar">
+    <button class="btn-primary-action" type="button" data-demo-submit="Kullanici ayarlari kaydedildi."><i class="bi bi-check-lg"></i> Kaydet</button>
+    <a class="btn-warning-action" asp-controller="Settings" asp-action="Users"><i class="bi bi-arrow-left"></i> Geri Don</a>
+</section>
+
+<section class="settings-editor-card">
+    <nav class="settings-tabs">
+        <button class="active" type="button" data-settings-tab-target="profile"><i class="bi bi-person-fill"></i> Kullanici Bilgileri</button>
+        <button type="button" data-settings-tab-target="menus"><i class="bi bi-list"></i> Menuler</button>
+        <button type="button" data-settings-tab-target="permissions"><i class="bi bi-gear-fill"></i> Yetkilendirme</button>
+        <button type="button" data-settings-tab-target="notifications"><i class="bi bi-envelope"></i> Bilgilendirme</button>
+        <button type="button" data-settings-tab-target="voice"><i class="bi bi-volume-up-fill"></i> Sesli Bilgilendirme</button>
+    </nav>
+
+    <div class="settings-tab-panel active" data-settings-tab-panel="profile">
+        <div class="settings-profile-grid">
+            <div class="settings-form-lines">
+                <label>Isim<input type="text" value="@Model.FullName" /></label>
+                <label>E-Posta<input type="email" value="@Model.Email" /><small>Sifre belirlemesi icin bu adrese link gonderiyoruz.</small></label>
+                <label>Cep Telefonu<input type="tel" value="@Model.PhoneNumber" /></label>
+                <label class="settings-switch-line">Aktif? <input type="checkbox" checked="@Model.IsActive" /></label>
+            </div>
+            <button class="settings-photo-button" type="button"><i class="bi bi-camera-fill"></i><span>Resim Ekle</span></button>
+        </div>
+    </div>
+
+    <div class="settings-tab-panel" data-settings-tab-panel="menus">
+        <div class="helper-note settings-note">Sol taraftaki menulerden sadece isinize yarayanlari secerek digerlerini kapatabilirsiniz.</div>
+        <div class="settings-check-list">
+            @foreach (var item in new[] { "ANA SAYFA", "Musteriler", "Tedarikciler", "Urun / Hizmet Tanimlari", "Depolar", "Uretim", "Ozel Fiyat Listeleri", "Kataloglariniz", "Urun Varyantlari", "Satislar", "Alislar", "Teklifler", "Nakit Yonetimi", "Raporlar", "Ayarlar" })
+            {
+                <label><input type="checkbox" checked /> @item</label>
+            }
+        </div>
+    </div>
+
+    <div class="settings-tab-panel" data-settings-tab-panel="permissions">
+        <div class="settings-permission-grid">
+            <aside class="settings-permission-list">
+                @foreach (var item in new[] { "Fatura girisi", "Fatura iptali", "Tahsilat girisi", "Tahsilat iptali", "Kullanici tanimlama", "Musteri kaydetme", "Urun tanimlama", "Fiyat degistirebilme", "Stok sayimi", "Raporlar" })
+                {
+                    <label><span>@item</span><input type="checkbox" checked /></label>
+                }
+            </aside>
+            <div class="settings-permission-detail">
+                <label>Kullanicinin islem yapabilecegi hesaplar<select><option>7 hesap secildi</option><option>Sadece Ana Kasa</option></select></label>
+                <label>Kullanicinin islem yapabilecegi depolar<select><option>Ana Depo</option><option>Tum depolar</option></select></label>
+                <label>Satislarin gorulmesi<select><option>Tum kullanicilarin satislarini gorebilir</option><option>Sadece kendi satislarini gorebilir</option></select></label>
+                <label>Musterilerin gorulmesi<select><option>Tum musterileri gorebilir</option><option>Sadece kendi musterilerini gorebilir</option></select></label>
+                <label>Masraflarin gorulmesi<select><option>Tum masraf kayitlarini gorebilir</option><option>Sadece kendi masraflarini gorebilir</option></select></label>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-tab-panel" data-settings-tab-panel="notifications">
+        <div class="helper-note settings-note">Gunluk finansal durum, stok seviyesi ve takvim hatirlatmalarini e-posta ile gonderebilirsiniz.</div>
+        <div class="settings-check-list compact">
+            @foreach (var item in new[] { "Gunluk finansal durumu e-posta ile gonder", "Kasa-banka hareketlerini ertesi gun gonder", "Stok seviyesi kritik seviyeye dusunce uyar", "Kredi karti limit asimini uyar", "Takvim hatirlatmalarini gonder" })
+            {
+                <label><input type="checkbox" checked /> @item</label>
+            }
+        </div>
+    </div>
+
+    <div class="settings-tab-panel" data-settings-tab-panel="voice">
+        <div class="helper-note settings-note">Sesli bilgilendirme yetkileri</div>
+        <div class="voice-settings-row">
+            <label><input type="checkbox" checked /> SanalPOS Tahsilatlari</label>
+            <select><option>Kadin</option><option>Erkek</option></select>
+            <input type="range" value="50" />
+            <input type="range" value="65" />
+            <button class="btn-secondary-action" type="button">Dene</button>
+        </div>
+        <div class="voice-settings-row">
+            <label><input type="checkbox" checked /> Banka Hesap Hareketleri</label>
+            <select><option>Kadin</option><option>Erkek</option></select>
+            <input type="range" value="50" />
+            <input type="range" value="65" />
+            <button class="btn-secondary-action" type="button">Dene</button>
+        </div>
+    </div>
+</section>

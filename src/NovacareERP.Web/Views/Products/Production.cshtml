@@ -1,0 +1,46 @@
+@model NovacareERP.Application.Products.ProductWorkspaceViewModel
+@{
+    ViewData["Title"] = "Uretim";
+}
+
+<section class="product-steps" data-production-steps>
+    <span class="active">Uretilen Urunu Secin</span>
+    <span>Icerik Urunleri Ekleyin</span>
+    <span>Kaydedin</span>
+</section>
+
+<section class="proposal-card products-proposal-card production-panel">
+    <div class="proposal-card-title green-title">URETIM</div>
+    <div class="helper-note">Uretimini yaptiginiz urunu asagidaki listeden secin</div>
+    <div class="product-picker production-picker">
+        <select data-production-select>
+            <option>Urun secin</option>
+            @foreach (var product in Model.Directory.Products)
+            {
+                <option>@product.Name</option>
+            }
+        </select>
+    </div>
+    <div class="production-compose" data-production-compose hidden>
+        <div class="proposal-items">
+            <div class="proposal-item-row head">
+                <span>Icerik Urun</span>
+                <span>Miktar</span>
+                <span>Birim</span>
+                <span>Fire</span>
+                <span>Durum</span>
+            </div>
+            <div class="proposal-item-row">
+                <span>Microsoft Mouse</span>
+                <span><input type="number" value="1" /></span>
+                <span>ad</span>
+                <span><input type="number" value="0" /></span>
+                <strong>Hazir</strong>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-info-action" type="button"><i class="bi bi-plus"></i> Icerik Ekle</button>
+            <button class="btn-primary-action" type="button" data-production-save><i class="bi bi-check-lg"></i> Uretimi Kaydet</button>
+        </div>
+    </div>
+</section>

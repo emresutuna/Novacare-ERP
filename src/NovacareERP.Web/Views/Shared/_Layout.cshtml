@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Finora ERP</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -20,23 +21,50 @@
             </a>
 
             <nav class="sidebar-nav" aria-label="Ana menu">
-                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i><span>Kontrol Paneli</span></a>
-                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-area="" asp-controller="Customers" asp-action="Index"><i class="bi bi-people-fill"></i><span>Musteriler</span></a>
-                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Appointments" ? "active" : "")" asp-area="" asp-controller="Appointments" asp-action="Index"><i class="bi bi-calendar-event-fill"></i><span>Randevular</span></a>
-                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "SalesInvoices" ? "active" : "")" asp-area="" asp-controller="SalesInvoices" asp-action="Index"><i class="bi bi-cart-check-fill"></i><span>Satis Faturalari</span></a>
-                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Proposals" ? "active" : "")" asp-area="" asp-controller="Proposals" asp-action="Index"><i class="bi bi-folder2-open"></i><span>Teklifler</span></a>
-                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "PurchaseInvoices" ? "active" : "")" asp-area="" asp-controller="PurchaseInvoices" asp-action="Index"><i class="bi bi-box-seam-fill"></i><span>Alis Faturalari</span></a>
-                <a href="#"><i class="bi bi-currency-exchange"></i><span>Kasa ve Banka</span></a>
-                <a href="#"><i class="bi bi-tags-fill"></i><span>Urunler</span></a>
-                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="bi bi-truck"></i><span>Tedarikciler</span></a>
-                <a href="#"><i class="bi bi-receipt"></i><span>Giderler</span></a>
-                <a href="#"><i class="bi bi-graph-up-arrow"></i><span>Raporlar</span></a>
-                <a href="#"><i class="bi bi-gear-fill"></i><span>Ayarlar</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-speedometer2"></i><span>Kontrol Paneli</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-area="" asp-controller="Customers" asp-action="Index"><i class="bi bi-person-vcard-fill"></i><span>Musteriler</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Appointments" ? "active" : "")" asp-area="" asp-controller="Appointments" asp-action="Index"><i class="bi bi-calendar2-week-fill"></i><span>Randevular</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "SalesInvoices" ? "active" : "")" asp-area="" asp-controller="SalesInvoices" asp-action="Index"><i class="bi bi-receipt-cutoff"></i><span>Satis Faturalari</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Proposals" ? "active" : "")" asp-area="" asp-controller="Proposals" asp-action="Index"><i class="bi bi-file-text-fill"></i><span>Teklifler</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "PurchaseInvoices" ? "active" : "")" asp-area="" asp-controller="PurchaseInvoices" asp-action="Index"><i class="bi bi-bag-check-fill"></i><span>Alis Faturalari</span></a>
+                <a href="#"><i class="bi bi-bank2"></i><span>Kasa ve Banka</span></a>
+                <details class="sidebar-group" open>
+                    <summary class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Products" ? "active" : "")">
+                        <i class="bi bi-tags-fill"></i><span>Urunler</span><b>-</b>
+                    </summary>
+                    <div class="sidebar-subnav">
+                        <a asp-area="" asp-controller="Products" asp-action="Index"><span>Urun / Hizmet Tanimlari</span></a>
+                        <a asp-area="" asp-controller="Products" asp-action="Warehouses"><span>Depolar</span></a>
+                        <a asp-area="" asp-controller="Products" asp-action="Production"><span>Uretim</span></a>
+                        <a asp-area="" asp-controller="Products" asp-action="PriceLists"><span>Ozel Fiyat Listeleri</span><em>yeni</em></a>
+                        <a asp-area="" asp-controller="Products" asp-action="Catalogs"><span>Kataloglariniz</span></a>
+                        <a asp-area="" asp-controller="Products" asp-action="Variants"><span>Urun Varyantlari</span></a>
+                    </div>
+                </details>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="bi bi-truck-front-fill"></i><span>Tedarikciler</span></a>
+                <a href="#"><i class="bi bi-cash-coin"></i><span>Giderler</span></a>
+                <a href="#"><i class="bi bi-bar-chart-line-fill"></i><span>Raporlar</span></a>
+                <details class="sidebar-group" open>
+                    <summary class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")">
+                        <i class="bi bi-gear-fill"></i><span>Ayarlar</span><b>-</b>
+                    </summary>
+                    <div class="sidebar-subnav">
+                        <a asp-area="" asp-controller="Settings" asp-action="Users"><span>Kullanicilar</span></a>
+                        <a asp-area="" asp-controller="Settings" asp-action="Definitions"><span>Tanimlar</span></a>
+                        <a asp-area="" asp-controller="Settings" asp-action="EFatura"><span>E-Fatura</span></a>
+                        <a asp-area="" asp-controller="Settings" asp-action="Pos"><span>e-Fatura POS Ayarlari</span><em>yeni</em></a>
+                        <a asp-area="" asp-controller="Settings" asp-action="InvoiceSettings"><span>Fatura/Irsaliye Ayari</span></a>
+                        <a asp-area="" asp-controller="Settings" asp-action="ProposalTemplates"><span>Teklif ve Ozel Sablonlar</span></a>
+                        <a asp-area="" asp-controller="Settings" asp-action="LabelTemplates"><span>Etiket Sablonlari</span></a>
+                        <a asp-area="" asp-controller="Settings" asp-action="Sms"><span>SMS Ayarlari</span></a>
+                        <a asp-area="" asp-controller="Settings" asp-action="Cargo"><span>Kargo Entegrasyonu</span><em>yeni</em></a>
+                    </div>
+                </details>
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#"><i class="bi bi-question-circle-fill"></i><span>Yardim</span></a>
-                <a href="#"><i class="bi bi-lock-fill"></i><span>Guvenli Cikis</span></a>
+                <a href="#"><i class="bi bi-life-preserver"></i><span>Yardim</span></a>
+                <a href="#"><i class="bi bi-box-arrow-right"></i><span>Guvenli Cikis</span></a>
             </div>
         </aside>
 

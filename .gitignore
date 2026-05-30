@@ -68,6 +68,10 @@ artifacts/
 # Tye
 .tye/
 
+# Local application database files
+src/**/App_Data/*.db
+src/**/App_Data/*.db-*
+
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 

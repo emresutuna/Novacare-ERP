@@ -1,0 +1,25 @@
+@model NovacareERP.Application.Settings.SettingsListItemViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section class="settings-detail-card">
+    <div class="settings-detail-head">
+        <i class="bi @Model.IconName"></i>
+        <div>
+            <h1>@Model.Title</h1>
+            <p>@Model.Description</p>
+        </div>
+        <span>@Model.StatusText</span>
+    </div>
+    <div class="settings-detail-form">
+        <label>Durum<select><option>Aktif</option><option>Pasif</option><option>Test modu</option></select></label>
+        <label>Kullanici / API Anahtari<input type="text" placeholder="Entegrasyon kullanicisi" /></label>
+        <label>Sifre / Secret<input type="password" placeholder="********" /></label>
+        <label>Bildirim E-Postasi<input type="email" placeholder="entegrasyon@firma.com" /></label>
+    </div>
+    <div class="modal-actions">
+        <button class="btn-secondary-action" type="button">Baglantiyi Test Et</button>
+        <button class="btn-primary-action" type="button" data-demo-submit="@Model.Title ayarlari kaydedildi."><i class="bi bi-check-lg"></i> Kaydet</button>
+    </div>
+</section>
