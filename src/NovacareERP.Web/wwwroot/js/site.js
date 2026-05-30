@@ -15,3 +15,24 @@ document.querySelectorAll("[data-tab-target]").forEach((tabButton) => {
     });
   });
 });
+
+document.querySelectorAll("[data-modal-open]").forEach((trigger) => {
+  trigger.addEventListener("click", () => {
+    const modal = document.getElementById(trigger.getAttribute("data-modal-open"));
+    modal?.classList.add("is-open");
+  });
+});
+
+document.querySelectorAll("[data-modal-close]").forEach((trigger) => {
+  trigger.addEventListener("click", () => {
+    trigger.closest(".modal-preview")?.classList.remove("is-open");
+  });
+});
+
+document.querySelectorAll(".modal-preview").forEach((modal) => {
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.classList.remove("is-open");
+    }
+  });
+});

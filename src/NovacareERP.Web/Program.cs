@@ -1,5 +1,7 @@
 using NovacareERP.Application.Dashboard;
 using NovacareERP.Application.Customers;
+using NovacareERP.Application.Proposals;
+using NovacareERP.Application.Suppliers;
 using NovacareERP.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IDashboardSnapshotService, DashboardSnapshotService>();
 builder.Services.AddSingleton<ICustomerDirectoryService, InMemoryCustomerDirectoryService>();
+builder.Services.AddSingleton<ISupplierDirectoryService, InMemorySupplierDirectoryService>();
+builder.Services.AddSingleton<IProposalDirectoryService, InMemoryProposalDirectoryService>();
 
 var app = builder.Build();
 

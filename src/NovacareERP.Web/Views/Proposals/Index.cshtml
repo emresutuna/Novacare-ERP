@@ -1,0 +1,125 @@
+@model NovacareERP.Application.Proposals.ProposalListViewModel
+@{
+    ViewData["Title"] = "Teklifler";
+    var totalAmount = Model.Proposals.Sum(proposal => proposal.TotalAmount);
+}
+
+<section class="proposal-toolbar">
+    <div class="module-actions">
+        <button class="btn-danger-action" type="button" data-modal-open="existing-customer-modal"><i class="bi bi-plus"></i> Kayitli Musteriye Teklif Hazirla</button>
+        <button class="btn-info-action" type="button" data-modal-open="new-customer-modal"><i class="bi bi-plus"></i> Yeni Musteriye Teklif Hazirla</button>
+    </div>
+</section>
+
+<section class="proposal-filter-panel">
+    <form class="proposal-filter-form" asp-controller="Proposals" asp-action="Index" method="get">
+        <div class="filter-left">
+            <select name="period">
+                <option>Son Bir Yil</option>
+                <option>Son 3 Ay</option>
+                <option>Bu Ay</option>
+            </select>
+        </div>
+        <div class="filter-right">
+            <label class="switch-field">
+                <span>Iptalleri de goster</span>
+                <input type="checkbox" name="includeCancelled" value="true" checked="@Model.IncludeCancelled" />
+                <i></i>
+            </label>
+            <label class="proposal-search">
+                <span>Ara:</span>
+                <select>
+                    <option>Musteri Ismi / Belge No</option>
+                    <option>Teklif No</option>
+                </select>
+                <input type="search" name="searchTerm" value="@Model.SearchTerm" placeholder="arama... (en az 3 karakter)" />
+            </label>
+            <button class="btn-secondary-action compact-action" type="submit"><i class="bi bi-search"></i> Ara</button>
+        </div>
+    </form>
+</section>
+
+<section class="proposal-list-shell">
+    <div class="proposal-table">
+        <div class="proposal-row head">
+            <span>Tarih</span>
+            <span>Isim/Unvan</span>
+            <span>Teklif No</span>
+            <span>Tutar</span>
+        </div>
+        @if (Model.Proposals.Count == 0)
+        {
+            <div class="empty-state proposal-empty-state">
+                <div class="empty-state-icon"><i class="bi bi-folder2-open"></i></div>
+                <div>
+                    <span class="eyebrow">Henuz teklif yok</span>
+                    <strong>Ilk teklifinizi hazirlayarak satis surecini baslatin.</strong>
+                    <small>Teklifler olustukca tarih, musteri, teklif no ve tutar bilgileri bu listede gorunecek.</small>
+                </div>
+                <a class="btn-primary-action" asp-controller="Proposals" asp-action="Create"><i class="bi bi-plus"></i> Yeni Teklif Hazirla</a>
+            </div>
+        }
+        else
+        {
+            @foreach (var proposal in Model.Proposals)
+            {
+                <a class="proposal-row proposal-row-link" asp-controller="Proposals" asp-action="Create" asp-route-customerId="@proposal.Id">
+                    <span><i class="row-expand bi bi-plus"></i> @proposal.ProposalDate.ToString("dd.MM.yyyy")</span>
+                    <span>@proposal.CustomerName</span>
+                    <span>@proposal.ProposalNumber</span>
+                    <span>@proposal.TotalAmount.ToString("N2") TL</span>
+                </a>
+            }
+        }
+    </div>
+</section>
+
+<section class="proposal-total-strip">
+    <span>Listelenen teklif toplamı</span>
+    <strong>@totalAmount.ToString("N2") TL</strong>
+</section>
+
+<div class="modal-preview" id="existing-customer-modal" aria-hidden="true">
+    <div class="modal-card compact-modal">
+        <div class="modal-title">
+            <h2>Musteri Arama</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <div class="helper-note">Teklif vereceginiz musteriyi secin</div>
+        <div class="modal-body">
+            <select>
+                <option>Eyup Biradli</option>
+                <option>Nova Medikal A.S.</option>
+                <option>Sutuna Danismanlik</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <a class="btn-warning-action" asp-controller="Proposals" asp-action="Create"><i class="bi bi-check-lg"></i> Kapat</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal-preview" id="new-customer-modal" aria-hidden="true">
+    <div class="modal-card">
+        <div class="modal-title">
+            <h2>Yeni Musteri Ekle</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <div class="helper-note">
+            Onceden musteri kaydi olmayan carilerinizi hizlica buradan ekleyebilirsiniz. Bu ekranda yer almayan diger detayli bilgileri daha sonra musteriler sayfasindan guncelleyebilirsiniz.
+        </div>
+        <form class="modal-form">
+            <label class="span-2">Isim / Unvan<input type="text" /></label>
+            <label>Telefon<input type="tel" placeholder="(___) ___ __ __" /></label>
+            <label>Para Birimi<select><option>TL</option><option>USD</option><option>EUR</option></select></label>
+            <label>Vergi Dairesi<input type="text" /></label>
+            <label>Vergi / TC Kimlik No<input type="text" /></label>
+            <label class="span-2">E-Posta<input type="email" /><small>Virgul ile ayirarak birden fazla adres girebilirsiniz.</small></label>
+            <label class="span-2">Adres<textarea rows="3"></textarea></label>
+        </form>
+        <div class="modal-actions">
+            <button class="btn-warning-action" type="button" data-modal-close><i class="bi bi-arrow-left"></i> Vazgec</button>
+            <a class="btn-success-action" asp-controller="Proposals" asp-action="Create"><i class="bi bi-check-lg"></i> Devam Et</a>
+        </div>
+    </div>
+</div>

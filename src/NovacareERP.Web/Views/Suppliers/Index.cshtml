@@ -1,0 +1,130 @@
+@model NovacareERP.Application.Suppliers.SupplierListViewModel
+@{
+    ViewData["Title"] = "Tedarikciler";
+    var activeSupplierCount = Model.Suppliers.Count(supplier => supplier.IsActive);
+    var totalBalance = Model.Suppliers.Sum(supplier => supplier.Balance);
+    var selectedTypeText = Model.SelectedLegalType.HasValue
+        ? Model.LegalTypeOptions.First(option => option.Value == Model.SelectedLegalType.Value).Text
+        : "Tum Tipler";
+}
+
+<section class="customer-hero">
+    <div class="customer-title">
+        <span class="eyebrow">Alis yonetimi</span>
+        <h1>Tedarikciler</h1>
+        <p>Tedarikci kartlarini, alis bakiyelerini ve odeme sureclerini musteriler moduluyle ayni sade yapida yonetin.</p>
+    </div>
+    <div class="page-actions customer-actions">
+        <a class="btn-primary-action" asp-controller="Suppliers" asp-action="Create"><i class="bi bi-plus"></i> Yeni Tedarikci</a>
+    </div>
+</section>
+
+@if (TempData["SupplierSaved"] is string message)
+{
+    <div class="notice-banner">@message</div>
+}
+
+<section class="customer-summary" aria-label="Tedarikci ozeti">
+    <article>
+        <span>Kayitli Tedarikci</span>
+        <strong>@Model.Suppliers.Count</strong>
+        <small>@selectedTypeText</small>
+    </article>
+    <article>
+        <span>Aktif Cari</span>
+        <strong>@activeSupplierCount</strong>
+        <small>Alis yapilabilir kayit</small>
+    </article>
+    <article>
+        <span>Toplam Bakiye</span>
+        <strong>@totalBalance.ToString("N0") TL</strong>
+        <small>Filtre sonucuna gore</small>
+    </article>
+    <article>
+        <span>Tedarikci Tipleri</span>
+        <strong>@Model.LegalTypeOptions.Count</strong>
+        <small>Sirket ve bireysel</small>
+    </article>
+</section>
+
+<section class="customer-layout list-only">
+    <article class="panel table-panel">
+        <div class="panel-header">
+            <div>
+                <span class="eyebrow">Tedarikci listesi</span>
+                <h2>Kayitlar</h2>
+            </div>
+            <span class="panel-count">@Model.Suppliers.Count kayit</span>
+        </div>
+
+        <form class="filter-bar" asp-controller="Suppliers" asp-action="Index" method="get">
+            <label>
+                Cari Tipi
+                <select name="legalType">
+                    <option value="">Tum tedarikciler</option>
+                    @foreach (var option in Model.LegalTypeOptions)
+                    {
+                        <option value="@((int)option.Value)" selected="@(Model.SelectedLegalType == option.Value)">
+                            @option.Text
+                        </option>
+                    }
+                </select>
+            </label>
+            <label>
+                Arama
+                <input type="search" name="searchTerm" value="@Model.SearchTerm" placeholder="Unvan, kod, yetkili veya vergi no" />
+            </label>
+            <button class="btn-primary-action" type="submit"><i class="bi bi-search"></i> Filtrele</button>
+        </form>
+
+        @if (Model.Suppliers.Count == 0)
+        {
+            <div class="empty-state supplier-empty-state">
+                <div class="empty-state-icon"><i class="bi bi-truck"></i></div>
+                <div>
+                    <span class="eyebrow">Henuz kayit yok</span>
+                    <strong>Ilk tedarikcinizi ekleyerek alis surecini baslatin.</strong>
+                    <small>Tedarikci kartlari olustuktan sonra alis faturalarini, odemeleri ve bakiyeleri bu ekrandan takip edeceksiniz.</small>
+                </div>
+                <a class="btn-primary-action" asp-controller="Suppliers" asp-action="Create"><i class="bi bi-plus"></i> Yeni Tedarikci Ekle</a>
+            </div>
+        }
+        else
+        {
+            <div class="customer-table">
+                <div class="customer-row head">
+                    <span>Kod / Unvan</span>
+                    <span>Cari Tipi</span>
+                    <span>Sorumlu Kisi</span>
+                    <span>Iletisim</span>
+                    <span>Bakiye</span>
+                </div>
+                @foreach (var supplier in Model.Suppliers)
+                {
+                    <a class="customer-row customer-row-link" asp-controller="Suppliers" asp-action="Details" asp-route-id="@supplier.Id">
+                        <span>
+                            <strong>@supplier.DisplayName</strong>
+                            <small>@supplier.Code - @supplier.City</small>
+                        </span>
+                        <span>
+                            <em class="pill orange">@supplier.LegalTypeText</em>
+                            <small>@supplier.TaxOffice @supplier.TaxNumber</small>
+                        </span>
+                        <span>
+                            <strong>@supplier.ContactPerson</strong>
+                            <small>@supplier.ContactTitle</small>
+                        </span>
+                        <span>
+                            <strong>@supplier.Phone</strong>
+                            <small>@supplier.Email</small>
+                        </span>
+                        <span>
+                            <strong>@supplier.Balance.ToString("N0") @supplier.CurrencyCode</strong>
+                            <small>Limit @supplier.PurchaseLimit.ToString("N0") @supplier.CurrencyCode</small>
+                        </span>
+                    </a>
+                }
+            </div>
+        }
+    </article>
+</section>

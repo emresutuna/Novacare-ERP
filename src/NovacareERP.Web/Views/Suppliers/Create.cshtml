@@ -1,0 +1,91 @@
+@model NovacareERP.Application.Suppliers.SupplierListViewModel
+@{
+    ViewData["Title"] = "Yeni Tedarikci";
+}
+
+<form class="customer-create" asp-controller="Suppliers" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <section class="record-hero">
+        <div>
+            <span class="eyebrow">Yeni tedarikci karti</span>
+            <h1>Tedarikci olustur</h1>
+            <p>Firma kimligi, iletisim, odeme limitleri ve alis bilgilerini tek kayit akisi icinde duzenleyin.</p>
+        </div>
+        <div class="record-toolbar">
+            <a class="btn-secondary-action back-action" asp-controller="Suppliers" asp-action="Index"><i class="bi bi-arrow-left"></i> Geri Don</a>
+            <button class="btn-primary-action save-action" type="submit">KAYDET</button>
+        </div>
+    </section>
+
+    <section class="record-card edit-record-card">
+        <div class="record-tab-panel active">
+            <div class="record-section-heading">
+                <div>
+                    <span class="eyebrow">Kart bilgileri</span>
+                    <h2>Temel tedarikci bilgileri</h2>
+                </div>
+            </div>
+
+            <div class="record-grid two-column">
+                <div class="record-field">
+                    <label>Firma / Tedarikci Unvani</label>
+                    <input asp-for="Form.DisplayName" name="DisplayName" placeholder="Firma veya kisi adi" />
+                </div>
+                <div class="record-field">
+                    <label>Cari Tipi</label>
+                    <select asp-for="Form.LegalType" name="LegalType">
+                        @foreach (var option in Model.LegalTypeOptions)
+                        {
+                            <option value="@((int)option.Value)">@option.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="record-field">
+                    <label>E-posta</label>
+                    <input asp-for="Form.Email" name="Email" type="email" />
+                </div>
+                <div class="record-field">
+                    <label>Telefon</label>
+                    <input asp-for="Form.Phone" name="Phone" type="tel" />
+                </div>
+                <div class="record-field">
+                    <label>Yetkili Kisi</label>
+                    <input asp-for="Form.ContactPerson" name="ContactPerson" />
+                </div>
+                <div class="record-field">
+                    <label>Gorevi</label>
+                    <input asp-for="Form.ContactTitle" name="ContactTitle" />
+                </div>
+                <div class="record-field">
+                    <label>Sehir</label>
+                    <input asp-for="Form.City" name="City" />
+                </div>
+                <div class="record-field">
+                    <label>Para Birimi</label>
+                    <select asp-for="Form.CurrencyCode" name="CurrencyCode">
+                        <option>TRY</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                    </select>
+                </div>
+                <div class="record-field">
+                    <label>Vergi Dairesi</label>
+                    <input asp-for="Form.TaxOffice" name="TaxOffice" />
+                </div>
+                <div class="record-field">
+                    <label>Vergi / TC Kimlik No</label>
+                    <input asp-for="Form.TaxNumber" name="TaxNumber" />
+                </div>
+                <div class="record-field">
+                    <label>Alis Limiti</label>
+                    <input asp-for="Form.PurchaseLimit" name="PurchaseLimit" type="number" min="0" step="1000" />
+                </div>
+                <div class="record-field span-2">
+                    <label>Adres</label>
+                    <textarea asp-for="Form.Address" name="Address" rows="4"></textarea>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

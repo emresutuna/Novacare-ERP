@@ -1,0 +1,65 @@
+@model NovacareERP.Application.Proposals.ProposalFormViewModel
+@{
+    ViewData["Title"] = "Teklif Hazirla";
+    var subtotal = Model.Items.Sum(item => item.TotalAmount);
+    var taxTotal = Model.Items.Sum(item => item.TotalAmount * item.TaxRate / 100);
+    var grandTotal = subtotal + taxTotal;
+}
+
+<form class="proposal-editor" asp-controller="Proposals" asp-action="Create" method="get">
+    <section class="proposal-editor-toolbar">
+        <button class="btn-primary-action" type="button"><i class="bi bi-check-lg"></i> Teklifi Kaydet</button>
+        <a class="btn-warning-action" asp-controller="Proposals" asp-action="Index"><i class="bi bi-arrow-left"></i> Geri Don</a>
+    </section>
+
+    <section class="proposal-editor-grid">
+        <article class="proposal-card customer-proposal-card">
+            <div class="proposal-card-title blue-title">@Model.CustomerName.ToUpperInvariant()</div>
+            <div class="proposal-fields">
+                <label>Teklif No<input type="text" value="@Model.ProposalNumber" /></label>
+                <label>Teklif Tarihi<input type="text" value="@Model.ProposalDate.ToString("dd.MM.yyyy")" /></label>
+                <label>Gecerlilik<input type="text" value="@Model.ValidUntil.ToString("dd.MM.yyyy")" /></label>
+                <label>Doviz Kuru<input type="number" value="@Model.ExchangeRate" /></label>
+                <label class="span-2">Aciklama<textarea rows="5">@Model.Description</textarea></label>
+            </div>
+        </article>
+
+        <article class="proposal-card products-proposal-card">
+            <div class="proposal-card-title green-title">URUN / HIZMETLER</div>
+            <div class="product-picker">
+                <label>Urun secin</label>
+                <select>
+                    <option>Urun secin</option>
+                    <option>Cevre Birimleri</option>
+                    <option>Microsoft Mouse (0 ad)</option>
+                </select>
+            </div>
+
+            <div class="proposal-items">
+                <div class="proposal-item-row head">
+                    <span>Urun / Hizmet</span>
+                    <span>Miktar</span>
+                    <span>Birim Fiyat</span>
+                    <span>KDV</span>
+                    <span>Tutar</span>
+                </div>
+                @foreach (var item in Model.Items)
+                {
+                    <div class="proposal-item-row">
+                        <span>@item.ProductOrServiceName</span>
+                        <span>@item.Quantity.ToString("N0")</span>
+                        <span>@item.UnitPrice.ToString("N2") TL</span>
+                        <span>%@item.TaxRate.ToString("N0")</span>
+                        <strong>@item.TotalAmount.ToString("N2") TL</strong>
+                    </div>
+                }
+            </div>
+
+            <div class="proposal-totals">
+                <div><span>Ara Toplam</span><strong>@subtotal.ToString("N2") TL</strong></div>
+                <div><span>KDV</span><strong>@taxTotal.ToString("N2") TL</strong></div>
+                <div class="grand-total"><span>Genel Toplam</span><strong>@grandTotal.ToString("N2") TL</strong></div>
+            </div>
+        </article>
+    </section>
+</form>

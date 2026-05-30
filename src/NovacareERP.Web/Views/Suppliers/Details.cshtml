@@ -1,0 +1,95 @@
+@model NovacareERP.Application.Suppliers.SupplierListItemViewModel
+@{
+    ViewData["Title"] = Model.DisplayName;
+    var availableLimit = Math.Max(Model.PurchaseLimit - Math.Max(Model.Balance, 0), 0);
+}
+
+<section class="customer-detail-hero">
+    <div class="customer-profile-card">
+        <div class="customer-avatar">@Model.DisplayName[..1].ToUpperInvariant()</div>
+        <div>
+            <span class="eyebrow">Tedarikci karti</span>
+            <h1>@Model.DisplayName</h1>
+            <div class="customer-meta">
+                <span>@Model.Code</span>
+                <span>@Model.LegalTypeText</span>
+                <span>@(string.IsNullOrWhiteSpace(Model.City) ? "Sehir girilmedi" : Model.City)</span>
+            </div>
+            <div class="customer-contact-line">
+                <span>@(string.IsNullOrWhiteSpace(Model.ContactPerson) ? "Yetkili kisi yok" : Model.ContactPerson)</span>
+                <span>@(string.IsNullOrWhiteSpace(Model.Phone) ? "Telefon yok" : Model.Phone)</span>
+                <span>@(string.IsNullOrWhiteSpace(Model.Email) ? "E-posta yok" : Model.Email)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-note-card">
+        <strong>Not</strong>
+        <p>Bu tedarikciyle ilgili satin alma notlari ve hatirlatmalar burada tutulacak.</p>
+    </div>
+</section>
+
+<section class="detail-actions">
+    <a class="btn-secondary-action" asp-controller="Suppliers" asp-action="Index"><i class="bi bi-arrow-left"></i> Listeye Don</a>
+    <a class="btn-secondary-action" asp-controller="Suppliers" asp-action="Edit" asp-route-id="@Model.Id"><i class="bi bi-gear-fill"></i> Duzenle</a>
+    <form class="inline-delete-form" asp-controller="Suppliers" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Bu tedarikci kaydini silmek istediginize emin misiniz?');">
+        @Html.AntiForgeryToken()
+        <button class="btn-danger-action" type="submit"><i class="bi bi-lock-fill"></i> Sil</button>
+    </form>
+    <button class="btn-primary-action" type="button"><i class="bi bi-plus"></i> Alis Gir</button>
+    <button class="btn-secondary-action" type="button"><i class="bi bi-currency-exchange"></i> Odeme Gir</button>
+</section>
+
+<section class="detail-metrics" aria-label="Tedarikci finans ozeti">
+    <article class="metric-balance">
+        <span>Acik Bakiye</span>
+        <strong>@Model.Balance.ToString("N0") @Model.CurrencyCode</strong>
+        <small>Guncel cari durum</small>
+    </article>
+    <article class="metric-limit">
+        <span>Alis Limiti</span>
+        <strong>@Model.PurchaseLimit.ToString("N0") @Model.CurrencyCode</strong>
+        <small>Kartta tanimli limit</small>
+    </article>
+    <article class="metric-available">
+        <span>Kullanilabilir Limit</span>
+        <strong>@availableLimit.ToString("N0") @Model.CurrencyCode</strong>
+        <small>Limit - acik bakiye</small>
+    </article>
+    <article class="metric-turnover">
+        <span>Alis Hacmi</span>
+        <strong>0 TL</strong>
+        <small>Hareketler baglanacak</small>
+    </article>
+</section>
+
+<section class="detail-grid">
+    <article class="detail-panel">
+        <div class="detail-panel-header">
+            <div>
+                <span class="eyebrow">Hareketler</span>
+                <h2>Onceki alislar</h2>
+            </div>
+        </div>
+        <div class="detail-empty">
+            <strong>Kayitli alis bulunmuyor.</strong>
+            <small>Bu tedarikciden ilk alis faturasini buradan olusturabilirsiniz.</small>
+        </div>
+    </article>
+
+    <article class="detail-panel">
+        <div class="detail-panel-header">
+            <div>
+                <span class="eyebrow">Bilgiler</span>
+                <h2>Cari ozeti</h2>
+            </div>
+        </div>
+        <dl class="detail-info-list">
+            <div><dt>Vergi Dairesi</dt><dd>@(string.IsNullOrWhiteSpace(Model.TaxOffice) ? "-" : Model.TaxOffice)</dd></div>
+            <div><dt>Vergi / TCKN</dt><dd>@(string.IsNullOrWhiteSpace(Model.TaxNumber) ? "-" : Model.TaxNumber)</dd></div>
+            <div><dt>Para Birimi</dt><dd>@Model.CurrencyCode</dd></div>
+            <div><dt>Sorumlu</dt><dd>@(string.IsNullOrWhiteSpace(Model.ContactTitle) ? "-" : Model.ContactTitle)</dd></div>
+            <div><dt>Durum</dt><dd>@(Model.IsActive ? "Aktif" : "Pasif")</dd></div>
+        </dl>
+    </article>
+</section>
