@@ -22,9 +22,9 @@
             <nav class="sidebar-nav" aria-label="Ana menu">
                 <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill"></i><span>Kontrol Paneli</span></a>
                 <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-area="" asp-controller="Customers" asp-action="Index"><i class="bi bi-people-fill"></i><span>Musteriler</span></a>
-                <a href="#"><i class="bi bi-cart-check-fill"></i><span>Satis Faturalari</span><b>+</b></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "SalesInvoices" ? "active" : "")" asp-area="" asp-controller="SalesInvoices" asp-action="Index"><i class="bi bi-cart-check-fill"></i><span>Satis Faturalari</span></a>
                 <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Proposals" ? "active" : "")" asp-area="" asp-controller="Proposals" asp-action="Index"><i class="bi bi-folder2-open"></i><span>Teklifler</span></a>
-                <a href="#"><i class="bi bi-box-seam-fill"></i><span>Alis Faturalari</span><b>+</b></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "PurchaseInvoices" ? "active" : "")" asp-area="" asp-controller="PurchaseInvoices" asp-action="Index"><i class="bi bi-box-seam-fill"></i><span>Alis Faturalari</span></a>
                 <a href="#"><i class="bi bi-currency-exchange"></i><span>Kasa ve Banka</span></a>
                 <a href="#"><i class="bi bi-tags-fill"></i><span>Urunler</span></a>
                 <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-area="" asp-controller="Suppliers" asp-action="Index"><i class="bi bi-truck"></i><span>Tedarikciler</span></a>

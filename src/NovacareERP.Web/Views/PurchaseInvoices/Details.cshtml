@@ -1,0 +1,135 @@
+@model NovacareERP.Application.PurchaseInvoices.PurchaseInvoiceFormViewModel
+@using NovacareERP.Application.Invoices
+@using NovacareERP.Domain.Enums
+@{
+    ViewData["Title"] = "Alis Faturasi Detay";
+    var subtotal = Model.Items.Sum(item => item.TotalAmount);
+    var taxTotal = Model.Items.Sum(item => item.TotalAmount * item.TaxRate / 100);
+    var grandTotal = subtotal + taxTotal;
+    var canSend = Model.DocumentType != ElectronicDocumentType.None && Model.DocumentStatus == ElectronicDocumentStatus.NotSent;
+    var canQuery = !string.IsNullOrWhiteSpace(Model.DocumentUuid);
+}
+
+@if (TempData["InvoiceSaved"] is string savedMessage)
+{
+    <div class="notice-banner">@savedMessage</div>
+}
+
+<section class="record-hero">
+    <div>
+        <span class="eyebrow">Alis faturasi</span>
+        <h1>@Model.InvoiceNumber</h1>
+        <p>@Model.SupplierName · @InvoiceDisplayText.GetDocumentTypeText(Model.DocumentType) · @InvoiceDisplayText.GetStatusText(Model.Status)</p>
+    </div>
+    <div class="record-toolbar">
+        <a class="btn-secondary-action back-action" asp-controller="PurchaseInvoices" asp-action="Index"><i class="bi bi-arrow-left"></i> Listeye Don</a>
+        <a class="btn-warning-action" asp-controller="PurchaseInvoices" asp-action="Edit" asp-route-id="@Model.Id"><i class="bi bi-pencil-fill"></i> Duzenle</a>
+    </div>
+</section>
+
+<section class="customer-summary invoice-summary">
+    <article class="metric-card">
+        <span>Genel Toplam</span>
+        <strong>@grandTotal.ToString("N2") @Model.CurrencyCode</strong>
+    </article>
+    <article class="metric-card">
+        <span>Belge Tipi</span>
+        <strong>@InvoiceDisplayText.GetDocumentTypeText(Model.DocumentType)</strong>
+    </article>
+    <article class="metric-card">
+        <span>GIB Durumu</span>
+        <strong><span class="pill @(Model.DocumentStatus == ElectronicDocumentStatus.Accepted ? "green" : Model.DocumentStatus == ElectronicDocumentStatus.Pending ? "orange" : "blue")">@InvoiceDisplayText.GetDocumentStatusText(Model.DocumentStatus)</span></strong>
+    </article>
+    <article class="metric-card">
+        <span>Fatura Tarihi</span>
+        <strong>@Model.IssueDate.ToString("dd.MM.yyyy")</strong>
+    </article>
+</section>
+
+<section class="proposal-editor-grid invoice-detail-grid">
+    <article class="proposal-card">
+        <div class="proposal-card-title blue-title">ALIS FATURASI BILGILERI</div>
+        <div class="proposal-fields">
+            <label>Tedarikci<input readonly value="@Model.SupplierName" /></label>
+            <label>Vergi No<input readonly value="@Model.SupplierTaxNumber" /></label>
+            <label>Fatura No<input readonly value="@Model.InvoiceNumber" /></label>
+            <label>Vade<input readonly value="@Model.DueDate?.ToString("dd.MM.yyyy")" /></label>
+            <label class="span-2">Aciklama<textarea readonly rows="3">@Model.Description</textarea></label>
+        </div>
+    </article>
+
+    <article class="proposal-card">
+        <div class="proposal-card-title green-title">KALEMLER</div>
+        <div class="proposal-items">
+            <div class="proposal-item-row head">
+                <span>Urun / Hizmet</span>
+                <span>Miktar</span>
+                <span>Birim Fiyat</span>
+                <span>KDV</span>
+                <span>Tutar</span>
+            </div>
+            @foreach (var item in Model.Items)
+            {
+                <div class="proposal-item-row">
+                    <span>@item.ProductOrServiceName</span>
+                    <span>@item.Quantity.ToString("N0")</span>
+                    <span>@item.UnitPrice.ToString("N2")</span>
+                    <span>%@item.TaxRate.ToString("N0")</span>
+                    <strong>@item.TotalAmount.ToString("N2")</strong>
+                </div>
+            }
+        </div>
+        <div class="proposal-totals">
+            <div><span>Ara Toplam</span><strong>@subtotal.ToString("N2") TL</strong></div>
+            <div><span>KDV</span><strong>@taxTotal.ToString("N2") TL</strong></div>
+            <div class="grand-total"><span>Genel Toplam</span><strong>@grandTotal.ToString("N2") TL</strong></div>
+        </div>
+    </article>
+</section>
+
+<section class="edoc-panel invoice-edoc-actions">
+    <div class="record-section-heading">
+        <div>
+            <span class="eyebrow">Gelen e-fatura</span>
+            <h2>Finora entegrasyonu</h2>
+        </div>
+    </div>
+    <p class="helper-note">@Model.IntegrationNote</p>
+    <div class="record-grid">
+        <div class="record-field">
+            <label>ETTN</label>
+            <input readonly value="@(Model.Ettn ?? "-")" />
+        </div>
+        <div class="record-field wide">
+            <label>Belge UUID</label>
+            <input readonly value="@(Model.DocumentUuid ?? "-")" />
+        </div>
+    </div>
+    <div class="module-actions edoc-actions">
+        @if (canSend)
+        {
+            <form asp-controller="PurchaseInvoices" asp-action="SendElectronicDocument" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn-primary-action" type="submit"><i class="bi bi-cloud-download-fill"></i> E-Faturayi Eslestir / Gonder</button>
+            </form>
+        }
+        @if (canQuery)
+        {
+            <form asp-controller="PurchaseInvoices" asp-action="QueryElectronicDocumentStatus" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn-info-action" type="submit"><i class="bi bi-arrow-repeat"></i> Durumu Sorgula</button>
+            </form>
+            <form asp-controller="PurchaseInvoices" asp-action="CancelElectronicDocument" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn-danger-action" type="submit"><i class="bi bi-x-circle-fill"></i> Belgeyi Iptal Et</button>
+            </form>
+        }
+    </div>
+</section>
+
+<section class="panel invoice-delete-panel">
+    <form asp-controller="PurchaseInvoices" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <button class="btn-danger-action" type="submit"><i class="bi bi-trash-fill"></i> Faturayi Sil</button>
+    </form>
+</section>

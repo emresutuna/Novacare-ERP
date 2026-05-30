@@ -21,6 +21,12 @@ public sealed class Invoice : BaseEntity, ICompanyScoped
     public DateOnly IssueDate { get; private set; }
     public DateOnly? DueDate { get; private set; }
     public InvoiceStatus Status { get; private set; } = InvoiceStatus.Draft;
+    public InvoiceType Type { get; private set; } = InvoiceType.Sales;
+    public string CurrencyCode { get; private set; } = "TRY";
+    public ElectronicDocumentType DocumentType { get; private set; } = ElectronicDocumentType.EFatura;
+    public ElectronicDocumentStatus DocumentStatus { get; private set; } = ElectronicDocumentStatus.NotSent;
+    public string? DocumentUuid { get; private set; }
+    public string? Ettn { get; private set; }
     public decimal NetAmount => _items.Sum(item => item.NetAmount);
     public decimal TaxAmount => _items.Sum(item => item.TaxAmount);
     public decimal GrossAmount => _items.Sum(item => item.GrossAmount);
@@ -29,6 +35,26 @@ public sealed class Invoice : BaseEntity, ICompanyScoped
     public void AddItem(string description, decimal quantity, decimal unitPrice, decimal taxRate)
     {
         _items.Add(new InvoiceItem(description, quantity, unitPrice, taxRate));
+        MarkUpdated();
+    }
+
+    public void ConfigureElectronicDocument(ElectronicDocumentType documentType)
+    {
+        DocumentType = documentType;
+        MarkUpdated();
+    }
+
+    public void MarkElectronicDocumentSent(string documentUuid, string ettn)
+    {
+        DocumentUuid = documentUuid;
+        Ettn = ettn;
+        DocumentStatus = ElectronicDocumentStatus.Pending;
+        MarkUpdated();
+    }
+
+    public void UpdateElectronicDocumentStatus(ElectronicDocumentStatus status)
+    {
+        DocumentStatus = status;
         MarkUpdated();
     }
 

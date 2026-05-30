@@ -2122,3 +2122,49 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+.invoice-row,
+.invoice-table .proposal-row.head.invoice-row {
+  grid-template-columns: 0.9fr 1.4fr 1fr 1fr 1fr 1fr;
+}
+
+.invoice-toolbar .module-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.invoice-summary {
+  margin-bottom: 24px;
+}
+
+.invoice-detail-grid {
+  margin-bottom: 24px;
+}
+
+.edoc-panel {
+  background: var(--surface-100, #f8fafc);
+  border: 1px solid var(--border-soft, #dbe3ee);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.edoc-actions {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.invoice-delete-panel {
+  padding: 16px 20px;
+}
+
+.proposal-item-row input {
+  width: 100%;
+  border: 1px solid var(--border-soft, #dbe3ee);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
+}

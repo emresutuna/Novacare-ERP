@@ -1,0 +1,160 @@
+@model NovacareERP.Application.SalesInvoices.SalesInvoiceFormViewModel
+@using NovacareERP.Application.Invoices
+@{
+    ViewData["Title"] = Model.Title;
+    var subtotal = Model.Items.Sum(item => item.TotalAmount);
+    var taxTotal = Model.Items.Sum(item => item.TotalAmount * item.TaxRate / 100);
+    var grandTotal = subtotal + taxTotal;
+    var isEdit = Model.Id != Guid.Empty;
+}
+
+<form class="customer-create invoice-create" asp-controller="SalesInvoices" asp-action="@(isEdit ? "Edit" : "Create")" asp-route-id="@(isEdit ? Model.Id : (Guid?)null)" method="post">
+    @Html.AntiForgeryToken()
+    @if (isEdit)
+    {
+        <input type="hidden" name="id" value="@Model.Id" />
+    }
+
+    <section class="record-hero">
+        <div>
+            <span class="eyebrow">Satis faturasi</span>
+            <h1>@Model.Title</h1>
+            <p>Musteri bilgileri, fatura kalemleri ve e-belge entegrasyon ayarlarini tek ekranda duzenleyin.</p>
+        </div>
+        <div class="record-toolbar">
+            <a class="btn-secondary-action back-action" asp-controller="SalesInvoices" asp-action="Index"><i class="bi bi-arrow-left"></i> Geri Don</a>
+            <button class="btn-primary-action save-action" type="submit">KAYDET</button>
+        </div>
+    </section>
+
+    <section class="record-workspace">
+        <aside class="record-side-nav" aria-label="Fatura bolumleri">
+            <button class="active" type="button" data-tab-target="invoice-info">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span><strong>Fatura</strong><small>Musteri ve tarih</small></span>
+            </button>
+            <button type="button" data-tab-target="invoice-items">
+                <i class="bi bi-list-check"></i>
+                <span><strong>Kalemler</strong><small>Urun ve tutarlar</small></span>
+            </button>
+            <button type="button" data-tab-target="invoice-edoc">
+                <i class="bi bi-cloud-upload-fill"></i>
+                <span><strong>E-Belge</strong><small>GIB entegrasyonu</small></span>
+            </button>
+        </aside>
+
+        <section class="record-card">
+            <div class="record-tab-panel active" data-tab-panel="invoice-info">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Fatura bilgileri</span>
+                        <h2>Musteri ve belge detaylari</h2>
+                    </div>
+                </div>
+                <div class="record-grid">
+                    <div class="record-field wide">
+                        <label>Musteri Unvani</label>
+                        <input name="CustomerName" value="@Model.CustomerName" />
+                    </div>
+                    <div class="record-field">
+                        <label>Vergi / TC No</label>
+                        <input name="CustomerTaxNumber" value="@Model.CustomerTaxNumber" />
+                    </div>
+                    <div class="record-field">
+                        <label>Fatura No</label>
+                        <input name="InvoiceNumber" value="@Model.InvoiceNumber" />
+                    </div>
+                    <div class="record-field">
+                        <label>Fatura Tarihi</label>
+                        <input name="IssueDate" value="@Model.IssueDate.ToString("yyyy-MM-dd")" type="date" />
+                    </div>
+                    <div class="record-field">
+                        <label>Vade Tarihi</label>
+                        <input name="DueDate" value="@Model.DueDate?.ToString("yyyy-MM-dd")" type="date" />
+                    </div>
+                    <div class="record-field">
+                        <label>Para Birimi</label>
+                        <select name="CurrencyCode">
+                            <option selected="@(Model.CurrencyCode == "TRY")">TRY</option>
+                            <option selected="@(Model.CurrencyCode == "USD")">USD</option>
+                            <option selected="@(Model.CurrencyCode == "EUR")">EUR</option>
+                        </select>
+                    </div>
+                    <div class="record-field wide">
+                        <label>Aciklama</label>
+                        <textarea name="Description" rows="3">@Model.Description</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="record-tab-panel" data-tab-panel="invoice-items">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">Fatura kalemleri</span>
+                        <h2>Urun ve hizmet satirlari</h2>
+                    </div>
+                </div>
+                <div class="proposal-items">
+                    <div class="proposal-item-row head">
+                        <span>Urun / Hizmet</span>
+                        <span>Miktar</span>
+                        <span>Birim Fiyat</span>
+                        <span>KDV</span>
+                        <span>Tutar</span>
+                    </div>
+                    @for (var i = 0; i < Model.Items.Count; i++)
+                    {
+                        var item = Model.Items[i];
+                        <div class="proposal-item-row">
+                            <span><input name="Items[@i].ProductOrServiceName" value="@item.ProductOrServiceName" /></span>
+                            <span><input name="Items[@i].Quantity" value="@item.Quantity" type="number" step="0.01" /></span>
+                            <span><input name="Items[@i].UnitPrice" value="@item.UnitPrice" type="number" step="0.01" /></span>
+                            <span><input name="Items[@i].TaxRate" value="@item.TaxRate" type="number" step="1" /></span>
+                            <span><input name="Items[@i].TotalAmount" value="@item.TotalAmount" type="number" step="0.01" /></span>
+                        </div>
+                    }
+                </div>
+                <div class="proposal-totals">
+                    <div><span>Ara Toplam</span><strong>@subtotal.ToString("N2") TL</strong></div>
+                    <div><span>KDV</span><strong>@taxTotal.ToString("N2") TL</strong></div>
+                    <div class="grand-total"><span>Genel Toplam</span><strong>@grandTotal.ToString("N2") TL</strong></div>
+                </div>
+            </div>
+
+            <div class="record-tab-panel" data-tab-panel="invoice-edoc">
+                <div class="record-section-heading">
+                    <div>
+                        <span class="eyebrow">E-belge entegrasyonu</span>
+                        <h2>Finora GIB entegrasyonu</h2>
+                    </div>
+                </div>
+                <div class="edoc-panel">
+                    <p class="helper-note">@Model.IntegrationNote</p>
+                    <div class="record-grid">
+                        <div class="record-field">
+                            <label>Belge Tipi</label>
+                            <select name="DocumentType">
+                                @foreach (var option in Model.DocumentTypeOptions)
+                                {
+                                    <option value="@((int)option.Value)" selected="@(Model.DocumentType == option.Value)">@option.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="record-field">
+                            <label>GIB Durumu</label>
+                            <input readonly value="@InvoiceDisplayText.GetDocumentStatusText(Model.DocumentStatus)" />
+                        </div>
+                        <div class="record-field">
+                            <label>ETTN</label>
+                            <input readonly value="@(Model.Ettn ?? "-")" />
+                        </div>
+                        <div class="record-field wide">
+                            <label>Belge UUID</label>
+                            <input readonly value="@(Model.DocumentUuid ?? "-")" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</form>

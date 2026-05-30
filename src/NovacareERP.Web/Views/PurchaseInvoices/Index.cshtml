@@ -1,0 +1,88 @@
+@model NovacareERP.Application.PurchaseInvoices.PurchaseInvoiceListViewModel
+@using NovacareERP.Domain.Enums
+@{
+    ViewData["Title"] = "Alis Faturalari";
+    var totalAmount = Model.Invoices.Sum(invoice => invoice.GrossAmount);
+}
+
+@if (TempData["InvoiceSaved"] is string savedMessage)
+{
+    <div class="notice-banner">@savedMessage</div>
+}
+
+<section class="proposal-toolbar invoice-toolbar">
+    <div class="module-actions">
+        <a class="btn-primary-action" asp-controller="PurchaseInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.EFatura)"><i class="bi bi-plus"></i> Gelen E-Fatura Gir</a>
+        <a class="btn-secondary-action" asp-controller="PurchaseInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.None)"><i class="bi bi-plus"></i> Manuel Alis Faturasi</a>
+    </div>
+</section>
+
+<section class="proposal-filter-panel">
+    <form class="proposal-filter-form" asp-controller="PurchaseInvoices" asp-action="Index" method="get">
+        <div class="filter-left">
+            <select name="documentType">
+                <option value="">Tum Belge Tipleri</option>
+                @foreach (var option in Model.DocumentTypeOptions)
+                {
+                    <option value="@((int)option.Value)" selected="@(Model.DocumentType == option.Value)">@option.Text</option>
+                }
+            </select>
+            <select name="status">
+                <option value="">Tum Durumlar</option>
+                <option value="@((int)InvoiceStatus.Draft)" selected="@(Model.Status == InvoiceStatus.Draft)">Taslak</option>
+                <option value="@((int)InvoiceStatus.Issued)" selected="@(Model.Status == InvoiceStatus.Issued)">Kayitli</option>
+            </select>
+        </div>
+        <div class="filter-right">
+            <label class="proposal-search">
+                <span>Ara:</span>
+                <input type="search" name="searchTerm" value="@Model.SearchTerm" placeholder="Tedarikci / fatura no" />
+            </label>
+            <button class="btn-secondary-action compact-action" type="submit"><i class="bi bi-search"></i> Ara</button>
+        </div>
+    </form>
+</section>
+
+<section class="proposal-list-shell">
+    <div class="proposal-table invoice-table">
+        <div class="proposal-row head invoice-row purchase-invoice-row">
+            <span>Tarih</span>
+            <span>Tedarikci</span>
+            <span>Fatura No</span>
+            <span>Belge Tipi</span>
+            <span>GIB Durumu</span>
+            <span>Tutar</span>
+        </div>
+        @if (Model.Invoices.Count == 0)
+        {
+            <div class="empty-state proposal-empty-state">
+                <div class="empty-state-icon"><i class="bi bi-box-seam"></i></div>
+                <div>
+                    <span class="eyebrow">Henuz alis faturasi yok</span>
+                    <strong>Tedarikcilerden gelen faturalari buradan kaydedin.</strong>
+                    <small>Gelen e-faturalar Finora entegrasyonu ile otomatik eslestirilecek, manuel faturalar da desteklenir.</small>
+                </div>
+                <a class="btn-primary-action" asp-controller="PurchaseInvoices" asp-action="Create"><i class="bi bi-plus"></i> Yeni Alis Faturasi</a>
+            </div>
+        }
+        else
+        {
+            @foreach (var invoice in Model.Invoices)
+            {
+                <a class="proposal-row proposal-row-link invoice-row purchase-invoice-row" asp-controller="PurchaseInvoices" asp-action="Details" asp-route-id="@invoice.Id">
+                    <span>@invoice.IssueDate.ToString("dd.MM.yyyy")</span>
+                    <span>@invoice.SupplierName</span>
+                    <span>@invoice.InvoiceNumber</span>
+                    <span><span class="pill blue">@invoice.DocumentTypeText</span></span>
+                    <span><span class="pill @(invoice.DocumentStatus == ElectronicDocumentStatus.Accepted ? "green" : invoice.DocumentStatus == ElectronicDocumentStatus.Pending ? "orange" : "blue")">@invoice.DocumentStatusText</span></span>
+                    <span>@invoice.GrossAmount.ToString("N2") @invoice.CurrencyCode</span>
+                </a>
+            }
+        }
+    </div>
+</section>
+
+<section class="proposal-total-strip">
+    <span>Listelenen alis faturasi toplami</span>
+    <strong>@totalAmount.ToString("N2") TL</strong>
+</section>
