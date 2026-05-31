@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NovacareERP.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using NovacareERP.Infrastructure.Persistence;
 namespace NovacareERP.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260531103934_AddInvoicePersistence")]
+    partial class AddInvoicePersistence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,110 +86,6 @@ namespace NovacareERP.Infrastructure.Persistence.Migrations
                     b.HasIndex("Date", "Time");
 
                     b.ToTable("Appointments", (string)null);
-                });
-
-            modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.CashAccountRecord", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AccountType")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CurrencyCode")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
-                    b.Property<decimal>("CurrentBalance")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsIntegrated")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(160)
-                        .HasColumnType("nvarchar(160)");
-
-                    b.Property<decimal>("OpeningBalance")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("OwnerName")
-                        .IsRequired()
-                        .HasMaxLength(160)
-                        .HasColumnType("nvarchar(160)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountType");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("CashAccounts", (string)null);
-                });
-
-            modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.CashMovementRecord", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("CashAccountId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CurrencyCode")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(320)
-                        .HasColumnType("nvarchar(320)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("StatusText")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CashAccountId");
-
-                    b.HasIndex("Date");
-
-                    b.ToTable("CashMovements", (string)null);
                 });
 
             modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.CustomerRecord", b =>
@@ -281,46 +180,6 @@ namespace NovacareERP.Infrastructure.Persistence.Migrations
                     b.HasIndex("DisplayName");
 
                     b.ToTable("Customers", (string)null);
-                });
-
-            modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.EmployeeCashSummaryRecord", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("AdvanceBalance")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EmployeeName")
-                        .IsRequired()
-                        .HasMaxLength(160)
-                        .HasColumnType("nvarchar(160)");
-
-                    b.Property<decimal>("ExpenseTotal")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("RoleName")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("nvarchar(120)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeName");
-
-                    b.ToTable("EmployeeCashSummaries", (string)null);
                 });
 
             modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.InvoiceLineRecord", b =>
@@ -551,17 +410,6 @@ namespace NovacareERP.Infrastructure.Persistence.Migrations
                     b.ToTable("Suppliers", (string)null);
                 });
 
-            modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.CashMovementRecord", b =>
-                {
-                    b.HasOne("NovacareERP.Infrastructure.Persistence.Entities.CashAccountRecord", "CashAccount")
-                        .WithMany("Movements")
-                        .HasForeignKey("CashAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CashAccount");
-                });
-
             modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.InvoiceLineRecord", b =>
                 {
                     b.HasOne("NovacareERP.Infrastructure.Persistence.Entities.InvoiceRecord", "Invoice")
@@ -571,11 +419,6 @@ namespace NovacareERP.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Invoice");
-                });
-
-            modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.CashAccountRecord", b =>
-                {
-                    b.Navigation("Movements");
                 });
 
             modelBuilder.Entity("NovacareERP.Infrastructure.Persistence.Entities.InvoiceRecord", b =>

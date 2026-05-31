@@ -1517,6 +1517,143 @@ button {
   color: #fff;
 }
 
+.cash-toolbar {
+  margin-bottom: 14px;
+}
+
+.cash-workspace {
+  display: grid;
+  grid-template-columns: minmax(620px, 1.2fr) minmax(420px, 0.8fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.cash-account-grid,
+.cash-side-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.cash-account-panel .panel-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cash-account-panel .panel-header i {
+  color: var(--green-600);
+}
+
+.cash-account-list {
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.cash-account-card {
+  min-height: 96px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--blue-050);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+}
+
+.cash-account-card strong,
+.cash-account-card small,
+.cash-account-card b {
+  display: block;
+}
+
+.cash-account-card strong {
+  color: var(--navy-950);
+  font-size: 15px;
+}
+
+.cash-account-card small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.cash-account-card b {
+  grid-column: 1 / -1;
+  color: var(--navy-950);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.cash-movement-table .table-row {
+  grid-template-columns: 92px minmax(160px, 1fr) 120px 88px;
+}
+
+.cash-movement-table .table-row span:nth-child(2) strong,
+.cash-movement-table .table-row span:nth-child(2) small {
+  display: block;
+}
+
+.cash-movement-table .table-row span:nth-child(2) small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.cash-positive {
+  color: var(--green-600);
+  font-weight: 850;
+}
+
+.cash-negative {
+  color: #b46100;
+  font-weight: 850;
+}
+
+.cash-employee-list {
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.cash-employee-list article {
+  min-height: 86px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.cash-employee-list strong,
+.cash-employee-list small,
+.cash-employee-list span,
+.cash-employee-list b {
+  display: block;
+}
+
+.cash-employee-list strong {
+  color: var(--navy-950);
+}
+
+.cash-employee-list small,
+.cash-employee-list span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cash-employee-list b {
+  margin-top: 3px;
+  color: var(--navy-950);
+  font-size: 14px;
+}
+
 .product-steps {
   margin-bottom: 16px;
   display: flex;
@@ -2876,6 +3013,7 @@ button {
 
   .erp-grid,
   .work-surface,
+  .cash-workspace,
   .customer-layout,
   .record-workspace,
   .customer-detail-hero,
@@ -2975,6 +3113,7 @@ button {
   }
 
   .metric-strip,
+  .cash-account-list,
   .customer-summary,
   .detail-metrics,
   .quick-actions,
@@ -3043,7 +3182,9 @@ button {
   }
 
   .detail-table-row,
-  .detail-info-list div {
+  .detail-info-list div,
+  .cash-movement-table .table-row,
+  .cash-employee-list article {
     grid-template-columns: 1fr;
   }
 }

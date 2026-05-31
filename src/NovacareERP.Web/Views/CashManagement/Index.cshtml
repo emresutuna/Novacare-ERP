@@ -1,0 +1,169 @@
+@model NovacareERP.Application.CashManagement.CashManagementWorkspaceViewModel
+@{
+    ViewData["Title"] = "Nakit Yonetimi";
+}
+
+@if (TempData["CashAccountSaved"] is string savedMessage)
+{
+    <div class="notice-banner">@savedMessage</div>
+}
+
+<section class="page-heading">
+    <div>
+        <span class="eyebrow">Finans merkezi</span>
+        <h1>Nakit Yonetimi</h1>
+        <p>Kasa, banka, POS, kredi karti, personel avanslari ve son hareketleri tek ekranda takip edin.</p>
+    </div>
+    <div class="page-actions">
+        <button class="btn-secondary-action" type="button"><i class="bi bi-arrow-left-right"></i> Virman</button>
+        <button class="btn-primary-action" type="button" data-modal-open="cash-account-modal"><i class="bi bi-plus"></i> Yeni Hesap</button>
+    </div>
+</section>
+
+<section class="metric-strip cash-metric-strip" aria-label="Nakit ozeti">
+    <article class="metric-card cash">
+        <span>Toplam Bakiye</span>
+        <strong>@Model.TotalBalance.ToString("N0") TL</strong>
+        <small>Tum kasa ve banka hesaplari</small>
+    </article>
+    <article class="metric-card income">
+        <span>Aktif Hesap</span>
+        <strong>@Model.AccountCount</strong>
+        <small>Kasa, banka ve POS dahil</small>
+    </article>
+    <article class="metric-card warning">
+        <span>Banka Entegrasyonu</span>
+        <strong>@Model.IntegrationCount</strong>
+        <small>Otomatik hareket takibi</small>
+    </article>
+    <article class="metric-card expense">
+        <span>Bekleyen Hareket</span>
+        <strong>@Model.RecentMovements.Count(movement => movement.StatusText == "Bekliyor")</strong>
+        <small>Kontrol gerektiren kayit</small>
+    </article>
+</section>
+
+<section class="proposal-toolbar cash-toolbar">
+    <div class="module-actions">
+        <button class="btn-primary-action" type="button" data-modal-open="cash-account-modal"><i class="bi bi-wallet2"></i> Kasa/Banka Ekle</button>
+        <button class="btn-info-action" type="button"><i class="bi bi-bank"></i> Banka Entegrasyonu</button>
+        <button class="btn-secondary-action" type="button"><i class="bi bi-person-plus"></i> Calisan Ekle</button>
+        <button class="btn-warning-action" type="button"><i class="bi bi-file-earmark-bar-graph"></i> Rapor</button>
+    </div>
+</section>
+
+<section class="cash-workspace">
+    <div class="cash-account-grid">
+        @foreach (var group in Model.AccountGroups)
+        {
+            <article class="panel cash-account-panel">
+                <div class="panel-header">
+                    <div>
+                        <span class="eyebrow">@group.Description</span>
+                        <h2><i class="bi @group.IconName"></i> @group.Title</h2>
+                    </div>
+                    <button class="ghost-button" type="button" data-modal-open="cash-account-modal"><i class="bi bi-plus"></i> Ekle</button>
+                </div>
+                <div class="cash-account-list">
+                    @foreach (var account in group.Accounts)
+                    {
+                        <article class="cash-account-card">
+                            <div>
+                                <strong>@account.Name</strong>
+                                <small>@account.OwnerName</small>
+                            </div>
+                            <span class="pill @(account.Balance < 0 ? "orange" : account.IsIntegrated ? "green" : "blue")">
+                                @(account.IsIntegrated ? "Entegre" : account.CurrencyCode)
+                            </span>
+                            <b>@account.Balance.ToString("N2") @account.CurrencyCode</b>
+                        </article>
+                    }
+                </div>
+            </article>
+        }
+    </div>
+
+    <aside class="cash-side-stack">
+        <article class="panel">
+            <div class="panel-header">
+                <div>
+                    <span class="eyebrow">Son hareketler</span>
+                    <h2>Nakit Akisi</h2>
+                </div>
+                <button class="ghost-button" type="button">Tumunu gor</button>
+            </div>
+            <div class="simple-table cash-movement-table">
+                <div class="table-row head"><span>Tarih</span><span>Hesap</span><span>Tutar</span><span>Durum</span></div>
+                @foreach (var movement in Model.RecentMovements)
+                {
+                    <div class="table-row">
+                        <span>@movement.Date.ToString("dd.MM.yyyy")</span>
+                        <span><strong>@movement.AccountName</strong><small>@movement.Description</small></span>
+                        <span class="@(movement.Amount < 0 ? "cash-negative" : "cash-positive")">@movement.Amount.ToString("N2") @movement.CurrencyCode</span>
+                        <em class="pill @(movement.StatusText == "Eslesmis" || movement.StatusText == "Kayitli" ? "green" : movement.StatusText == "Bekliyor" ? "orange" : "blue")">@movement.StatusText</em>
+                    </div>
+                }
+            </div>
+        </article>
+
+        <article class="panel">
+            <div class="panel-header">
+                <div>
+                    <span class="eyebrow">Personel</span>
+                    <h2>Avans ve Masraf</h2>
+                </div>
+            </div>
+            <div class="cash-employee-list">
+                @foreach (var employee in Model.EmployeeSummaries)
+                {
+                    <article>
+                        <div>
+                            <strong>@employee.EmployeeName</strong>
+                            <small>@employee.RoleName</small>
+                        </div>
+                        <span>Avans <b>@employee.AdvanceBalance.ToString("N2") TL</b></span>
+                        <span>Masraf <b>@employee.ExpenseTotal.ToString("N2") TL</b></span>
+                    </article>
+                }
+            </div>
+        </article>
+    </aside>
+</section>
+
+<div class="modal-preview" id="cash-account-modal" aria-hidden="true">
+    <div class="modal-card">
+        <div class="modal-title">
+            <h2>Hesap Tanimi</h2>
+            <button type="button" data-modal-close aria-label="Kapat">x</button>
+        </div>
+        <form asp-controller="CashManagement" asp-action="CreateAccount" method="post">
+            @Html.AntiForgeryToken()
+            <div class="modal-form">
+                <label>
+                    Hesap Turu
+                    <select name="AccountType">
+                        <option value="Cash">Kasa</option>
+                        <option value="Bank">Banka</option>
+                        <option value="Pos">POS</option>
+                        <option value="CreditCard">Kredi Karti</option>
+                        <option value="Partner">Ortak</option>
+                        <option value="Receivable">Veresiye</option>
+                    </select>
+                </label>
+                <label>Para Birimi<select name="CurrencyCode"><option>TL</option><option>USD</option><option>EUR</option></select></label>
+                <label class="span-2">Hesap Adi<input name="Name" type="text" placeholder="or. Merkez TL Kasa" /></label>
+                <label>Acilis Bakiyesi<input name="OpeningBalance" type="number" step="0.01" value="0" /></label>
+                <label>Sorumlu<input name="OwnerName" type="text" placeholder="Finans" /></label>
+                <label class="span-2 switch-field">
+                    <span>Banka/POS entegrasyonu aktif</span>
+                    <input name="IsIntegrated" type="checkbox" value="true" />
+                    <i></i>
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary-action" type="button" data-modal-close><i class="bi bi-x-lg"></i> Vazgec</button>
+                <button class="btn-primary-action" type="submit"><i class="bi bi-check-lg"></i> Kaydet</button>
+            </div>
+        </form>
+    </div>
+</div>

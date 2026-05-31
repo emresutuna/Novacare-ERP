@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NovacareERP.Application.CashManagement;
 using NovacareERP.Application.Dashboard;
 using NovacareERP.Application.Customers;
 using NovacareERP.Application.Appointments;
@@ -23,11 +24,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IDashboardSnapshotService, DashboardSnapshotService>();
 builder.Services.AddScoped<ICustomerDirectoryService, EfCustomerDirectoryService>();
 builder.Services.AddScoped<IAppointmentDirectoryService, EfAppointmentDirectoryService>();
-builder.Services.AddSingleton<ISupplierDirectoryService, InMemorySupplierDirectoryService>();
+builder.Services.AddScoped<ISupplierDirectoryService, EfSupplierDirectoryService>();
 builder.Services.AddSingleton<IProposalDirectoryService, InMemoryProposalDirectoryService>();
 builder.Services.AddSingleton<IProductDirectoryService, InMemoryProductDirectoryService>();
-builder.Services.AddScoped<ISalesInvoiceDirectoryService, InMemorySalesInvoiceDirectoryService>();
-builder.Services.AddScoped<IPurchaseInvoiceDirectoryService, InMemoryPurchaseInvoiceDirectoryService>();
+builder.Services.AddScoped<ICashManagementDirectoryService, EfCashManagementDirectoryService>();
+builder.Services.AddScoped<ISalesInvoiceDirectoryService, EfSalesInvoiceDirectoryService>();
+builder.Services.AddScoped<IPurchaseInvoiceDirectoryService, EfPurchaseInvoiceDirectoryService>();
 builder.Services.AddSingleton<ISettingsDirectoryService, InMemorySettingsDirectoryService>();
 builder.Services.AddSingleton<IElectronicDocumentIntegration, StubElectronicDocumentIntegration>();
 

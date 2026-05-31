@@ -27,7 +27,7 @@
                 <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "SalesInvoices" ? "active" : "")" asp-area="" asp-controller="SalesInvoices" asp-action="Index"><i class="bi bi-receipt-cutoff"></i><span>Satis Faturalari</span></a>
                 <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Proposals" ? "active" : "")" asp-area="" asp-controller="Proposals" asp-action="Index"><i class="bi bi-file-text-fill"></i><span>Teklifler</span></a>
                 <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "PurchaseInvoices" ? "active" : "")" asp-area="" asp-controller="PurchaseInvoices" asp-action="Index"><i class="bi bi-bag-check-fill"></i><span>Alis Faturalari</span></a>
-                <a href="#"><i class="bi bi-bank2"></i><span>Kasa ve Banka</span></a>
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "CashManagement" ? "active" : "")" asp-area="" asp-controller="CashManagement" asp-action="Index"><i class="bi bi-bank2"></i><span>Nakit Yonetimi</span></a>
                 <details class="sidebar-group" open>
                     <summary class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Products" ? "active" : "")">
                         <i class="bi bi-tags-fill"></i><span>Urunler</span><b>-</b>

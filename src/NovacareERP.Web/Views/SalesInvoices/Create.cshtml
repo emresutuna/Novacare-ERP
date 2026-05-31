@@ -15,11 +15,16 @@
         <input type="hidden" name="id" value="@Model.Id" />
     }
 
+    <input type="hidden" name="DocumentStatus" value="@((int)Model.DocumentStatus)" />
+    <input type="hidden" name="Status" value="@((int)Model.Status)" />
+    <input type="hidden" name="ExchangeRate" value="@Model.ExchangeRate" />
+    <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
+
     <section class="record-hero">
         <div>
             <span class="eyebrow">Satis faturasi</span>
             <h1>@Model.Title</h1>
-            <p>Musteri bilgileri, fatura kalemleri ve e-belge entegrasyon ayarlarini tek ekranda duzenleyin.</p>
+            <p>Musteri bilgileri, belge detaylari, urun/hizmet kalemleri ve e-belge durumunu sistemin satis akisina uygun sekilde duzenleyin.</p>
         </div>
         <div class="record-toolbar">
             <a class="btn-secondary-action back-action" asp-controller="SalesInvoices" asp-action="Index"><i class="bi bi-arrow-left"></i> Geri Don</a>
@@ -28,9 +33,9 @@
     </section>
 
     <section class="record-workspace">
-        <aside class="record-side-nav" aria-label="Fatura bolumleri">
+        <aside class="record-side-nav" aria-label="Satis faturasi bolumleri">
             <button class="active" type="button" data-tab-target="invoice-info">
-                <i class="bi bi-receipt-cutoff"></i>
+                <i class="bi bi-receipt"></i>
                 <span><strong>Fatura</strong><small>Musteri ve tarih</small></span>
             </button>
             <button type="button" data-tab-target="invoice-items">
@@ -38,8 +43,8 @@
                 <span><strong>Kalemler</strong><small>Urun ve tutarlar</small></span>
             </button>
             <button type="button" data-tab-target="invoice-edoc">
-                <i class="bi bi-cloud-upload-fill"></i>
-                <span><strong>E-Belge</strong><small>GIB entegrasyonu</small></span>
+                <i class="bi bi-send-check"></i>
+                <span><strong>E-Belge</strong><small>GIB bilgileri</small></span>
             </button>
         </aside>
 
@@ -47,17 +52,17 @@
             <div class="record-tab-panel active" data-tab-panel="invoice-info">
                 <div class="record-section-heading">
                     <div>
-                        <span class="eyebrow">Fatura bilgileri</span>
+                        <span class="eyebrow">Satis faturasi bilgileri</span>
                         <h2>Musteri ve belge detaylari</h2>
                     </div>
                 </div>
                 <div class="record-grid">
                     <div class="record-field wide">
                         <label>Musteri Unvani</label>
-                        <input name="CustomerName" value="@Model.CustomerName" />
+                        <input name="CustomerName" value="@Model.CustomerName" placeholder="Perakende / musteri unvani" />
                     </div>
                     <div class="record-field">
-                        <label>Vergi / TC No</label>
+                        <label>Vergi / TC Kimlik No</label>
                         <input name="CustomerTaxNumber" value="@Model.CustomerTaxNumber" />
                     </div>
                     <div class="record-field">
@@ -90,7 +95,7 @@
             <div class="record-tab-panel" data-tab-panel="invoice-items">
                 <div class="record-section-heading">
                     <div>
-                        <span class="eyebrow">Fatura kalemleri</span>
+                        <span class="eyebrow">Satis kalemleri</span>
                         <h2>Urun ve hizmet satirlari</h2>
                     </div>
                 </div>
@@ -115,17 +120,17 @@
                     }
                 </div>
                 <div class="proposal-totals">
-                    <div><span>Ara Toplam</span><strong>@subtotal.ToString("N2") TL</strong></div>
-                    <div><span>KDV</span><strong>@taxTotal.ToString("N2") TL</strong></div>
-                    <div class="grand-total"><span>Genel Toplam</span><strong>@grandTotal.ToString("N2") TL</strong></div>
+                    <div><span>Ara Toplam</span><strong>@subtotal.ToString("N2") @Model.CurrencyCode</strong></div>
+                    <div><span>KDV</span><strong>@taxTotal.ToString("N2") @Model.CurrencyCode</strong></div>
+                    <div class="grand-total"><span>Genel Toplam</span><strong>@grandTotal.ToString("N2") @Model.CurrencyCode</strong></div>
                 </div>
             </div>
 
             <div class="record-tab-panel" data-tab-panel="invoice-edoc">
                 <div class="record-section-heading">
                     <div>
-                        <span class="eyebrow">E-belge entegrasyonu</span>
-                        <h2>Finora GIB entegrasyonu</h2>
+                        <span class="eyebrow">E-belge</span>
+                        <h2>Belge tipi ve GIB durumu</h2>
                     </div>
                 </div>
                 <div class="edoc-panel">

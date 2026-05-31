@@ -1,8 +1,7 @@
 @model NovacareERP.Application.SalesInvoices.SalesInvoiceListViewModel
-@using NovacareERP.Application.Invoices
 @using NovacareERP.Domain.Enums
 @{
-    ViewData["Title"] = "Satis Faturalari";
+    ViewData["Title"] = "Satislar";
     var totalAmount = Model.Invoices.Sum(invoice => invoice.GrossAmount);
 }
 
@@ -13,9 +12,18 @@
 
 <section class="proposal-toolbar invoice-toolbar">
     <div class="module-actions">
-        <a class="btn-primary-action" asp-controller="SalesInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.EFatura)"><i class="bi bi-plus"></i> E-Fatura Olustur</a>
-        <a class="btn-info-action" asp-controller="SalesInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.EArsiv)"><i class="bi bi-plus"></i> E-Arsiv Olustur</a>
-        <a class="btn-secondary-action" asp-controller="SalesInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.EIrsaliye)"><i class="bi bi-plus"></i> E-Irsaliye Olustur</a>
+        <a class="btn-primary-action" asp-controller="SalesInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.EArsiv)">
+            <i class="bi bi-plus"></i> Perakende Satis
+        </a>
+        <a class="btn-secondary-action" asp-controller="SalesInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.EFatura)">
+            <i class="bi bi-plus"></i> Yeni Musteri Satisi
+        </a>
+        <a class="btn-danger-action" asp-controller="SalesInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.EFatura)">
+            <i class="bi bi-person-check"></i> Kayitli Musteri Satisi
+        </a>
+        <a class="btn-warning-action" asp-controller="SalesInvoices" asp-action="Create" asp-route-documentType="@((int)ElectronicDocumentType.None)">
+            <i class="bi bi-file-earmark-text"></i> Serbest Meslek Makbuzu
+        </a>
     </div>
 </section>
 
@@ -59,11 +67,11 @@
         @if (Model.Invoices.Count == 0)
         {
             <div class="empty-state proposal-empty-state">
-                <div class="empty-state-icon"><i class="bi bi-receipt-cutoff"></i></div>
+                <div class="empty-state-icon"><i class="bi bi-receipt"></i></div>
                 <div>
                     <span class="eyebrow">Henuz satis faturasi yok</span>
-                    <strong>Ilk satis faturanizi olusturarak e-fatura surecini baslatin.</strong>
-                    <small>E-fatura, e-arşiv ve e-irsaliye belgeleri Finora entegrasyonu uzerinden GIB'e iletilecektir.</small>
+                    <strong>Ilk satis isleminizi buradan kaydedin.</strong>
+                    <small>Faturalar olustukca musteri, belge tipi, GIB durumu ve tutar bilgileri bu listede gorunecek.</small>
                 </div>
                 <a class="btn-primary-action" asp-controller="SalesInvoices" asp-action="Create"><i class="bi bi-plus"></i> Yeni Satis Faturasi</a>
             </div>
@@ -86,6 +94,6 @@
 </section>
 
 <section class="proposal-total-strip">
-    <span>Listelenen fatura toplami</span>
+    <span>Listelenen satis faturasi toplami</span>
     <strong>@totalAmount.ToString("N2") TL</strong>
 </section>

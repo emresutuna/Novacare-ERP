@@ -95,6 +95,93 @@ public static class DatabaseSeeder
             dbContext.SaveChanges();
         }
 
+        if (!dbContext.Suppliers.Any())
+        {
+            dbContext.Suppliers.AddRange(
+                new SupplierRecord
+                {
+                    Id = Guid.Parse("6b6c6cdd-3ac8-4ad3-8e72-bac1f31dd001"),
+                    Code = "TED-0001",
+                    DisplayName = "Medline Tedarik A.S.",
+                    LegalType = CustomerLegalType.JointStockCompany,
+                    TaxNumber = "5820123456",
+                    TaxOffice = "Umraniye",
+                    ContactPerson = "Mert Kaya",
+                    ContactTitle = "Satis Yoneticisi",
+                    Email = "satis@medlinetedarik.com",
+                    Phone = "+90 216 100 20 30",
+                    City = "Istanbul",
+                    CurrencyCode = "TRY",
+                    Balance = 12800,
+                    PurchaseLimit = 250000,
+                    PaymentTermDays = 30
+                },
+                new SupplierRecord
+                {
+                    Id = Guid.Parse("6b6c6cdd-3ac8-4ad3-8e72-bac1f31dd002"),
+                    Code = "TED-0002",
+                    DisplayName = "Ankara Laboratuvar Urunleri",
+                    LegalType = CustomerLegalType.LimitedCompany,
+                    TaxNumber = "4820123456",
+                    TaxOffice = "Cankaya",
+                    ContactPerson = "Selin Acar",
+                    ContactTitle = "Operasyon Sorumlusu",
+                    Email = "operasyon@anklab.com",
+                    Phone = "+90 312 400 50 60",
+                    City = "Ankara",
+                    CurrencyCode = "TRY",
+                    PurchaseLimit = 175000,
+                    PaymentTermDays = 45
+                });
+
+            dbContext.SaveChanges();
+        }
+
+        if (!dbContext.CashAccounts.Any())
+        {
+            var cashAccounts = new[]
+            {
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd001", "Cash", "TL Kasa", "TL", 42500m, "Merkez Ofis", false),
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd002", "Cash", "Saha Kasa", "TL", 8750m, "Operasyon", false),
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd003", "Bank", "Banka TL Hesabi", "TL", 182450m, "Finans", true),
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd004", "Bank", "Banka USD Hesabi", "USD", 12400m, "Finans", true),
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd005", "Bank", "Banka EUR Hesabi", "EUR", 8300m, "Finans", true),
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd006", "Pos", "POS Hesabi", "TL", 15680m, "Satis", true),
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd007", "CreditCard", "Kredi Kartim", "TL", -9200m, "Yonetim", false),
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd008", "Partner", "Sirket Ortagi Hesabi", "TL", 0m, "Yonetim", false),
+                CreateCashAccount("7b6c6cdd-3ac8-4ad3-8e72-bac1f31dd009", "Receivable", "Veresiye Hesabi", "TL", 12450m, "Satis", false)
+            };
+
+            dbContext.CashAccounts.AddRange(cashAccounts);
+            dbContext.CashMovements.AddRange(
+                CreateCashMovement("8b6c6cdd-3ac8-4ad3-8e72-bac1f31dd001", cashAccounts[2], DateTime.Today, "Nova Medikal tahsilati", 22500m, "Eslesmis"),
+                CreateCashMovement("8b6c6cdd-3ac8-4ad3-8e72-bac1f31dd002", cashAccounts[0], DateTime.Today.AddDays(-1), "Gun sonu kasa aktarimi", 8400m, "Kayitli"),
+                CreateCashMovement("8b6c6cdd-3ac8-4ad3-8e72-bac1f31dd003", cashAccounts[6], DateTime.Today.AddDays(-2), "Ofis gideri odemesi", -3250m, "Kontrol"),
+                CreateCashMovement("8b6c6cdd-3ac8-4ad3-8e72-bac1f31dd004", cashAccounts[5], DateTime.Today.AddDays(-3), "Kartli satis tahsilati", 12680m, "Bekliyor"));
+
+            dbContext.EmployeeCashSummaries.AddRange(
+                new EmployeeCashSummaryRecord
+                {
+                    Id = Guid.Parse("9b6c6cdd-3ac8-4ad3-8e72-bac1f31dd001"),
+                    EmployeeName = "Emre Sutuna",
+                    RoleName = "Yonetici",
+                    AdvanceBalance = 0,
+                    ExpenseTotal = 4200,
+                    CreatedAt = DateTime.UtcNow
+                },
+                new EmployeeCashSummaryRecord
+                {
+                    Id = Guid.Parse("9b6c6cdd-3ac8-4ad3-8e72-bac1f31dd002"),
+                    EmployeeName = "Finans Ekibi",
+                    RoleName = "Operasyon",
+                    AdvanceBalance = 2500,
+                    ExpenseTotal = 11850,
+                    CreatedAt = DateTime.UtcNow
+                });
+
+            dbContext.SaveChanges();
+        }
+
         var fallbackCustomer = dbContext.Customers
             .OrderBy(customer => customer.DisplayName)
             .FirstOrDefault();
@@ -135,4 +222,44 @@ public static class DatabaseSeeder
             dbContext.SaveChanges();
         }
     }
+
+    private static CashAccountRecord CreateCashAccount(
+        string id,
+        string accountType,
+        string name,
+        string currencyCode,
+        decimal balance,
+        string ownerName,
+        bool isIntegrated) =>
+        new()
+        {
+            Id = Guid.Parse(id),
+            AccountType = accountType,
+            Name = name,
+            CurrencyCode = currencyCode,
+            OpeningBalance = balance,
+            CurrentBalance = balance,
+            OwnerName = ownerName,
+            IsIntegrated = isIntegrated,
+            CreatedAt = DateTime.UtcNow
+        };
+
+    private static CashMovementRecord CreateCashMovement(
+        string id,
+        CashAccountRecord account,
+        DateTime date,
+        string description,
+        decimal amount,
+        string statusText) =>
+        new()
+        {
+            Id = Guid.Parse(id),
+            CashAccountId = account.Id,
+            Date = DateOnly.FromDateTime(date),
+            Description = description,
+            Amount = amount,
+            CurrencyCode = account.CurrencyCode,
+            StatusText = statusText,
+            CreatedAt = DateTime.UtcNow
+        };
 }
